@@ -1,0 +1,6 @@
+.DS_STORE
+
+.python-version
+
+# Byte-compiled
+__pycache__/
