@@ -22,3 +22,11 @@ Next, activate the virtual environment:
 ```sh
 $ pipenv shell
 ```
+
+## Quick Start
+
+Unpack the zipped tarball for the data to be used in Phase 1:
+
+```sh
+$ tar -zxvf prereq.tgz
+```
