@@ -1,10 +1,12 @@
 from pymongo import MongoClient
 import json
 import time
+import os
 
-def main():
+def main() -> int:
 
     try:
+        start_time = time.time()
         port = getPort()
         client = MongoClient()
         db = client['291db']
@@ -31,6 +33,9 @@ def main():
         votes.insert_many(votesDocs)
 
         print("Phase 1 complete")
+        print("--- %s seconds ---" % (time.time() - start_time))
+
+        return 0
 
     except TypeError as e:
         print(e)
@@ -39,15 +44,10 @@ def main():
         print(e)
 
 
-def extractTermsFrom(postDoc):
+def extractTermsFrom(postDoc: dict) -> list:
     '''
     Extracts terms from the title and body if those fields exist in the given post document, 
     and returns them in a list.
-
-    Input:
-        postDoc -- dict
-    Return:
-        list
     '''
     title = []
     if 'Title' in postDoc:
@@ -90,35 +90,29 @@ def termFilter(t: str) -> str:
     return t
 
 
-def getPort():
+def getPort() -> int:
     '''
     Prompts the user for MongoDB port number and returns it.
     Raise TypeError if the user enters an invalid port number.
     '''
     port = input("Enter MongoDB the port number: ")
+    if port == '':
+        return 27017    # default mongoDB port
     if not port.isdigit():
         raise TypeError("Invalid port number")
 
     return int(port)
 
 
-def readDocsFrom(filename):
+def readDocsFrom(filename: str) -> list:
     '''
     Reads a specified json file and returns the list of documents.
-
-    Input:
-        filename -- str
-    Return:
-        list
     '''
+    fpath = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data', filename)
+    print(fpath)
     collName = filename[:-5].lower()
-    with open(filename, 'r') as f:
+    with open(fpath, 'r') as f:
         data = json.load(f)
 
     return data[collName]['row'] 
 
-
-if __name__ == "__main__":
-    start_time = time.time()
-    main()
-    print("--- %s seconds ---" % (time.time() - start_time))
