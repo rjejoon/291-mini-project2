@@ -28,5 +28,6 @@ $ pipenv shell
 Unpack the zipped tarball for the data to be used in Phase 1:
 
 ```sh
-$ tar -zxvf prereq.tgz
+$ tar -zxvf prereq.tgz -C phase1/data
 ```
+
