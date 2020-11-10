@@ -21,19 +21,25 @@ def main() -> int:
         tags = db['tags']
         votes = db['votes']
 
-        postDocs = readDocsFrom('Posts.json')
+        print("Inserting documents to posts collection...")
+        postDocs = readDocumentsFrom('Posts.json')
         for postDoc in postDocs:
             postDoc['terms'] = extractTermsFrom(postDoc)
-
-        tagsDocs = readDocsFrom('Tags.json')
-        votesDocs = readDocsFrom('Votes.json')
-        
         posts.insert_many(postDocs)
-        tags.insert_many(tagsDocs)
-        votes.insert_many(votesDocs)
+        print("Done\n")
 
-        print("Phase 1 complete")
-        print("--- %s seconds ---" % (time.time() - start_time))
+        print("Inserting documents to tags collection...")
+        tagsDocs = readDocumentsFrom('Tags.json')
+        tags.insert_many(tagsDocs)
+        print("Done\n")
+
+        print("Inserting documents to votes collection...")
+        votesDocs = readDocumentsFrom('Votes.json')
+        votes.insert_many(votesDocs)
+        print("Done\n")
+
+        print("Phase 1 complete!")
+        print("It took {:.5f} seconds".format(time.time() - start_time))
 
         return 0
 
@@ -72,22 +78,8 @@ def termFilter(t: str) -> str:
     t = t.strip()
     t = t.replace('<p>', '')
     t = t.replace('</p>', '')
-    t = t.replace('.', '')
-    t = t.replace(',', '')
-    t = t.replace('?', '')
-    t = t.replace('!', '')
-    t = t.replace('.', '')
-    t = t.replace(':', '')
-    t = t.replace(';', '')
-    t = t.replace('(', '')
-    t = t.replace(')', '')
-    t = t.replace('[', '')
-    t = t.replace(']', '')
-    t = t.replace('{', '')
-    t = t.replace('}', '')
-    t = t.replace('"', '')
-
-    return t
+    t = t.replace('<a href=\\', '')
+    return ''.join([ch for ch in t if ch.isalnum()])
 
 
 def getPort() -> int:
@@ -104,12 +96,11 @@ def getPort() -> int:
     return int(port)
 
 
-def readDocsFrom(filename: str) -> list:
+def readDocumentsFrom(filename: str) -> list:
     '''
     Reads a specified json file and returns the list of documents.
     '''
     fpath = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data', filename)
-    print(fpath)
     collName = filename[:-5].lower()
     with open(fpath, 'r') as f:
         data = json.load(f)
