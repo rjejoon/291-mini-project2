@@ -107,3 +107,4 @@ def readDocumentsFrom(filename: str) -> list:
 
     return data[collName]['row'] 
 
+
