@@ -26,17 +26,17 @@ def main() -> int:
         for postDoc in postDocs:
             postDoc['terms'] = extractTermsFrom(postDoc)
         posts.insert_many(postDocs)
-        print("Done\n")
+        print("Done!\n")
 
         print("Inserting documents to tags collection...")
         tagsDocs = readDocumentsFrom('Tags.json')
         tags.insert_many(tagsDocs)
-        print("Done\n")
+        print("Done!\n")
 
         print("Inserting documents to votes collection...")
         votesDocs = readDocumentsFrom('Votes.json')
         votes.insert_many(votesDocs)
-        print("Done\n")
+        print("Done!\n")
 
         print("Phase 1 complete!")
         print("It took {:.5f} seconds".format(time.time() - start_time))
@@ -45,9 +45,11 @@ def main() -> int:
 
     except TypeError as e:
         print(e)
+        return 1
 
     except Exception as e:
         print(e)
+        return 2
 
 
 def extractTermsFrom(postDoc: dict) -> list:
@@ -82,6 +84,31 @@ def termFilter(t: str) -> str:
     return ''.join([ch for ch in t if ch.isalnum()])
 
 
+def filterTerms(s: str) -> list:
+    '''
+    Extract alphanumeric terms that are at least 3 chars long from the given string.
+    '''
+    terms = []
+    start = 0
+    for end in range(len(s)):
+        if not s[end].isalnum():
+            if end - start >= 3:    # len of term must be larger than 3 
+                terms.append(s[start:end])
+            start = end + 1
+
+    # the last term is not added if the last char is alphanumeric.
+    if s[end].isalnum():    
+        if end - start >= 3:
+            terms.append(s[start:end+1])
+
+    return terms
+
+
+    
+
+
+
+
 def getPort() -> int:
     '''
     Prompts the user for MongoDB port number and returns it.
@@ -106,5 +133,8 @@ def readDocumentsFrom(filename: str) -> list:
         data = json.load(f)
 
     return data[collName]['row'] 
+
+
+
 
 
