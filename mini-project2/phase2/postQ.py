@@ -5,21 +5,18 @@ from phase1.filterTerms import filterTerms
 
 
 def postQ(db, uid):
-
     posts = db['posts']
-    tags = db['tags']
-    votes = db['votes']
+    pid = getPID(posts)
 
     valid = False
     while not valid:
-        pid = getPID(posts)
-        print('done')
-        title = input("Enter your title: ")
+        
+        title = input("\nEnter your title: ")
         body = input("Enter your body text: ")
         tags = getTags()
         crdate = str(date.today())
 
-        validEntry = confirm(title, body, tags)
+        validEntry = confirmInfo(title, body, tags)
 
         if validEntry:
             post = {
@@ -38,58 +35,56 @@ def postQ(db, uid):
                 }
             if tags:
                 post["Tags"] = tags
-
             terms = filterTerms(extractTermsFrom(post))
-        
             posts.insert_one(post)
             valid = True
 
+            print()
+            print("Posting Completed!")
+        
+        if not valid:
+            prompt = "Do you still want to post a question? [y/n] "
+            uin = validInput(prompt,['y','n'])
+            if uin == 'n':
+                valid = True
+
 
 def getPID(posts):
-    #pipeline = [
-    #{"$group":{ "_id":"null","maxId":{"$max":"$Id"}}}
-    #]
-    #maxid = posts.aggregate(pipeline)
-    #print(type(maxid))
-    #print(list(maxid))
-    
     cursor = posts.aggregate([
         {"$group": {"_id": None, "maxId": {"$max": {"$toInt": "$Id"}}}}
-        ])
+    ])
     maxId = cursor.next()['maxId']
+    pid = str(int(maxId)+1)
 
-    pid = str(maxid+1)
     return pid
+
 
 def getTags():
     tags = input("Enter zero or more tags, each separated by a comma: ")
-    taglst = []
+    tagStr = ''
     for tag in tags.split(','):
         tag = tag.strip()
         if tag:
-            taglst.append(tag)
-    if len(taglst) > 0:
-        tagStr = ''
-        for tag in taglst():
             tagStr += '<'+tag+'>'
-        return tagStr
-    else:
-        return None
-
     
+    return tagStr if tagStr else None
 
 
+def confirmInfo(title, body, tags):
+    if not tags:
+        tags = 'N/A'
 
-def confirm(title, body, tags):
     print("Please double check your information")
     print("     Title: {}".format(title))
     print("     Body: {}".format(body))
     print("     Tags: {}".format(tags))
     print()
 
-    prompt = "Is this correct? [y/n]"
+    prompt = "Is this correct? [y/n] "
     uin = validInput(prompt, ['y','n'])
+
     return True if uin == 'y' else False
+
 
 def validInput(prompt, entries):
     while True:
@@ -97,5 +92,3 @@ def validInput(prompt, entries):
         if i in entries:
             return i 
         print("error: invalid entry\n")
-
-main()

@@ -21,6 +21,7 @@ def main():
         uid = getUid()
         displayReport(uid)
 
+        postQ(db, uid)
 
         return 0
 
