@@ -8,7 +8,7 @@ def main() -> int:
     try:
         start_time = time.time()
         port = getPort()
-        client = MongoClient()
+        client = MongoClient(port=port)
         db = client['291db']
 
         # drop collections if already exist in db
@@ -102,11 +102,6 @@ def filterTerms(s: str) -> list:
             terms.append(s[start:end+1])
 
     return terms
-
-
-    
-
-
 
 
 def getPort() -> int:
