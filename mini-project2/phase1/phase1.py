@@ -2,6 +2,7 @@ from pymongo import MongoClient
 import json
 import time
 import os
+from phase1.extractTermsFrom import extractTermsFrom
 
 def main() -> int:
 
@@ -41,7 +42,7 @@ def main() -> int:
         print("Phase 1 complete!")
         print("It took {:.5f} seconds".format(time.time() - start_time))
 
-        return db
+        return 0
 
     except TypeError as e:
         print(e)
@@ -50,26 +51,6 @@ def main() -> int:
     except Exception as e:
         print(e)
         return 2
-
-
-def extractTermsFrom(postDoc: dict) -> list:
-    '''
-    Extracts terms from the title and body if those fields exist in the given post document, 
-    and returns them in a list.
-    '''
-    title = []
-    if 'Title' in postDoc:
-        title = postDoc['Title'].split()
-        title = map(termFilter, title)
-        title = list(filter(lambda t: len(t)>=3, title))
-
-    body = []
-    if 'Body' in postDoc:
-        body = postDoc['Body'].split()
-        body = map(termFilter, body)
-        body = list(filter(lambda t: len(t)>=3, body))
-
-    return title + body
 
 
 def getPort() -> int:

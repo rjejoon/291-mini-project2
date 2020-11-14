@@ -1,7 +1,6 @@
 from pymongo import MongoClient
 from datetime import date
 from phase1.extractTermsFrom import extractTermsFrom
-from phase1.filterTerms import filterTerms
 
 
 def postQ(db, uid):
@@ -35,7 +34,11 @@ def postQ(db, uid):
                 }
             if tags:
                 post["Tags"] = tags
-            terms = filterTerms(extractTermsFrom(post))
+                
+            terms = extractTermsFrom(post)
+            if len(terms) > 0:
+                post["Terms"] = terms
+            
             posts.insert_one(post)
             valid = True
 

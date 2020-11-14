@@ -18,3 +18,14 @@ def extractTermsFrom(postDoc: dict) -> list:
         body = list(filter(lambda t: len(t)>=3, body))
 
     return title + body
+
+def termFilter(t: str) -> str:
+    '''
+    Filter out the whitespaces and punctuations from the string.
+    '''
+
+    t = t.strip()
+    t = t.replace('<p>', '')
+    t = t.replace('</p>', '')
+    t = t.replace('<a href=\\', '')
+    return ''.join([ch for ch in t if ch.isalnum()])
