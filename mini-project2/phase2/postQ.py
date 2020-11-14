@@ -1,42 +1,48 @@
 from pymongo import MongoClient
 from datetime import date
+from phase1.extractTermsFrom import extractTermsFrom
+from phase1.filterTerms import filterTerms
 
-def main():
-    client = MongoClient('mongodb://localhost:27017/')
-    with client:
-        db = client["291db"]
-        posts = db['posts']
-        valid = False
-        while not valid:
-            pid = getPID(posts)
-            print('done')
-            title = input("Enter your title: ")
-            body = input("Enter your body text: ")
-            tags = getTags()
-            crdate = str(date.today())
 
-            validEntry = confirm(title, body, tags)
+def postQ(db, uid):
 
-            if validEntry:
-                post = {
-                        "Id": pid,
-                        "PostTypeId": "1",
-                        "CreationDate": crdate,
-                        "Score": 0,
-                        "ViewCount": 0,
-                        "Body": body,
-                        "OwnerUserId": uid,
-                        "Title": title,
-                        "AnswerCount": 0,
-                        "CommentCount": 0,
-                        "FavoriteCount": 0,
-                        "ContentLicense": "CC BY-SA 2.5"
-                    }
-                if tags:
-                    post["Tags"] = tags
-            
-                posts.insert_one(post)
-                valid = True
+    posts = db['posts']
+    tags = db['tags']
+    votes = db['votes']
+
+    valid = False
+    while not valid:
+        pid = getPID(posts)
+        print('done')
+        title = input("Enter your title: ")
+        body = input("Enter your body text: ")
+        tags = getTags()
+        crdate = str(date.today())
+
+        validEntry = confirm(title, body, tags)
+
+        if validEntry:
+            post = {
+                    "Id": pid,
+                    "PostTypeId": "1",
+                    "CreationDate": crdate,
+                    "Score": 0,
+                    "ViewCount": 0,
+                    "Body": body,
+                    "OwnerUserId": uid,
+                    "Title": title,
+                    "AnswerCount": 0,
+                    "CommentCount": 0,
+                    "FavoriteCount": 0,
+                    "ContentLicense": "CC BY-SA 2.5"
+                }
+            if tags:
+                post["Tags"] = tags
+
+            terms = filterTerms(extractTermsFrom(post))
+        
+            posts.insert_one(post)
+            valid = True
 
 
 def getPID(posts):
@@ -47,8 +53,11 @@ def getPID(posts):
     #print(type(maxid))
     #print(list(maxid))
     
-    maxid = posts.find_one(sort=[("Id", -1)])
-    print(maxid)
+    cursor = posts.aggregate([
+        {"$group": {"_id": None, "maxId": {"$max": {"$toInt": "$Id"}}}}
+        ])
+    maxId = cursor.next()['maxId']
+
     pid = str(maxid+1)
     return pid
 
@@ -67,8 +76,6 @@ def getTags():
     else:
         return None
 
-def extractTerms(title, body):
-    pass
     
 
 

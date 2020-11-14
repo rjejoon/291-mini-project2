@@ -2,6 +2,7 @@ from pymongo import MongoClient
 
 from phase1.phase1 import getPort
 from phase2.displayReport import displayReport
+from phase2.postQ import postQ
 
 
 
@@ -19,6 +20,7 @@ def main():
 
         uid = getUid()
         displayReport(uid)
+
 
         return 0
 
