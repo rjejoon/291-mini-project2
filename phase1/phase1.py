@@ -41,7 +41,7 @@ def main() -> int:
         print("Phase 1 complete!")
         print("It took {:.5f} seconds".format(time.time() - start_time))
 
-        return 0
+        return db
 
     except TypeError as e:
         print(e)
