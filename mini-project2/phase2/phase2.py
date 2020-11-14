@@ -13,14 +13,10 @@ def main():
         client = MongoClient(port=port)
         db = client['291db']
 
-        # collections
-        posts = db['posts']
-        tags = db['tags']
-        votes = db['votes']
-
         uid = getUid()
-        displayReport(uid)
+        displayReport(db, uid)
 
+        return
         postQ(db, uid)
 
         return 0
@@ -32,7 +28,7 @@ def main():
 
 
 
-def getUid() -> int:
+def getUid() -> str:
     '''
     Prompts the user for uid, which is a numeric field, and returns it.
     '''
@@ -40,8 +36,9 @@ def getUid() -> int:
     while True:
         uid = input('Enter your id: ')
         if uid == '':
-            return -1
+            return '' 
         if uid.isdigit():
-            return int(uid)
+            print(uid)
+            return uid
         else:
             print("error: id must a number")
