@@ -25,7 +25,7 @@ def main() -> int:
         print("Inserting documents to posts collection...")
         postDocs = readDocumentsFrom('Posts.json')
         for postDoc in postDocs:
-            postDoc['terms'] = extractTermsFrom(postDoc)
+            postDoc['Terms'] = extractTermsFrom(postDoc)
         posts.insert_many(postDocs)
         print("Done!\n")
 
