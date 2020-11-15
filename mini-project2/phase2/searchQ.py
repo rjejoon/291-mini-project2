@@ -18,7 +18,7 @@ def getKeywords():
     prompt = "Enter keywords to search, each separated by a comma: "
     valid = False 
     while not valid:
-        keywords = input(prompt).split(',')
+        keywords = input(prompt).lower().split(',')
         kwList = []
         for keyword in keywords:
             keyword = keyword.strip()
@@ -37,9 +37,29 @@ def findMatch(posts, kwList):
 
     cursor = posts.aggregate([
         {"$match": {"PostTypeId":"1"}},
-        {"$match": {"Terms": {"$in": kwList}}},
-        {"$unwind": "$Terms"},
-        {"$match": {"Terms": {"$in": kwList}}},
+        {"$project": {
+                        "Id": 1,
+                        "Title": 1,
+                        "CreationDate": 1,
+                        "Score": 1,
+                        "AnswerCount": 1,
+                        "terms": 1,
+                        "tagarr": {         # split tags into an array
+                                    "$split": [{"$substr": [
+                                                        "$Tags", 
+                                                        1, 
+                                                        {"$subtract": [{"$strLenCP": "$Tags"}, 2]}
+                                                    ]
+                                                }, 
+                                                "><"]
+                                    }
+                        }
+        },
+
+        {"$match": { "$or": [ {"terms": {"$in": kwList}}, {"tagarr": {"$in": kwList}} ] }},
+        {"$unwind": "$terms"},
+        {"$unwind": "$tagarr"},
+        {"$match": { "$or": [ {"terms": {"$in": kwList}}, {"tagarr": {"$in": kwList}} ] }},
         {"$group": {"_id": "$Id", 
                     "Title": {"$first": "$Title"},
                     "CreationDate": {"$first": "$CreationDate"}, 
