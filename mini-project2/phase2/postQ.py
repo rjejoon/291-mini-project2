@@ -13,7 +13,7 @@ def postQ(db, uid):
         title = input("\nEnter your title: ")
         body = input("Enter your body text: ")
         tags = getTags()
-        crdate = str(date.today())
+        crdate = str(date.today())  # TODO use date function built in mongo
 
         validEntry = confirmInfo(title, body, tags)
 
