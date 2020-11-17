@@ -1,4 +1,3 @@
- 
 
 def extractTermsFrom(postDoc: dict) -> list:
     '''
@@ -7,25 +6,33 @@ def extractTermsFrom(postDoc: dict) -> list:
     '''
     title = []
     if 'Title' in postDoc:
-        title = postDoc['Title'].split()
-        title = map(termFilter, title)
-        title = list(filter(lambda t: len(t)>=3, title))
-
+        title = filterTerms(postDoc['Title'])
+        
     body = []
     if 'Body' in postDoc:
-        body = postDoc['Body'].split()
-        body = map(termFilter, body)
-        body = list(filter(lambda t: len(t)>=3, body))
+        body = filterTerms(postDoc['Body'])
 
     return title + body
 
-def termFilter(t: str) -> str:
-    '''
-    Filter out the whitespaces and punctuations from the string.
-    '''
 
-    t = t.strip()
-    t = t.replace('<p>', '')
-    t = t.replace('</p>', '')
-    t = t.replace('<a href=\\', '')
-    return ''.join([ch for ch in t if ch.isalnum()])
+def filterTerms(s: str) -> list:
+    '''
+    Extract alphanumeric terms that are at least 3 chars long from the given string.
+    '''
+    if len(s) <= 0:
+        return []
+
+    terms = []
+    start = 0
+    for end in range(len(s)):
+        if not s[end].isalnum():
+            if end - start >= 3:    # len of term must be larger than 3 
+                terms.append(s[start:end])
+            start = end + 1
+
+    # the last term is not added if the last char is alphanumeric.
+    if s[end].isalnum():    
+        if end - start >= 3:
+            terms.append(s[start:end+1])
+
+    return terms
