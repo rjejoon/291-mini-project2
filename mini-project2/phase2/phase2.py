@@ -39,7 +39,6 @@ def getUid() -> str:
         if uid == '':
             return '' 
         if uid.isdigit():
-            print(uid)
             return uid
         else:
             print("error: id must a number")
