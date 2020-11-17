@@ -4,7 +4,7 @@ from phase1.phase1 import getPort
 from phase2.displayReport import displayReport
 from phase2.postQ import postQ
 from phase2.searchQ import searchQ
-
+from phase2.listAnswers import listAnswers
 
 
 def main():
@@ -13,12 +13,22 @@ def main():
         port = getPort()
         client = MongoClient(port=port)
         db = client['291db']
-
         uid = getUid()
         displayReport(db, uid)
 
-        #postQ(db, uid)
-        searchQ(db)
+        # TODO make a main loop of the program
+        pressedExit = False
+        while not pressedExit:
+            com = getValidInput("Enter a command: ", ['s', 'p', 'q'])
+
+            if com == 's'
+                targetQ, action = searchQ(db)
+                if action == 'la':
+                    listAnswers(db['posts'], targetQ)
+            elif com == 'p':
+                postQ(db, uid)
+            elif com == 'q':
+                pressedExit = True
 
         return 0
 
@@ -42,3 +52,12 @@ def getUid() -> str:
             return uid
         else:
             print("error: id must a number")
+
+
+def getValidInput(prompt: str, validEntries: list) -> str:
+
+    while True:
+        entry = input(prompt)
+        if entry in validEntries:
+            return entry
+        print(errmsg("error: invalid entry"))
