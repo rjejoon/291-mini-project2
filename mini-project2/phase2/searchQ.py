@@ -11,7 +11,7 @@ def searchQ(db):
         no, action = displaySearchResult(resultList, posts)
     else:
         print('error: there is no matching post.')
-    
+
 
 def getKeywords():
 
@@ -63,7 +63,7 @@ def findMatch(posts, kwList):
         {"$group": {"_id": "$Id", 
                     "Title": {"$first": "$Title"},
                     "CreationDate": {"$first": "$CreationDate"}, 
-                    "Score": {"$first": "$Scoree"}, 
+                    "Score": {"$first": "$Score"}, 
                     "AnswerCount": {"$first": "$AnswerCount"},
                     "match": {"$sum": 1}}},
         {"$sort": {"match": -1}}
