@@ -32,52 +32,46 @@ def getKeywords():
             keyword = keyword.strip()
             if keyword and keyword not in kwList:
                 kwList.append(keyword)
-        kwStr = '|'.join(kwList)
         if len(kwList) > 0:
             valid = True
         else:
             print("error: keywords cannot be empty.")
 
-    return kwStr
+    return kwList
 
 
-def findMatch(posts, kwStr):
+def findMatch(posts, kwList):
 
-    # TODO bug: # of matches are too large
 
     cursor = posts.aggregate([
-        {"$match": {"PostTypeId":"1"}},
-        {"$project": {
-                        "Id": 1,
-                        "Title": 1,
-                        "CreationDate": 1,
-                        "Score": 1,
-                        "AnswerCount": 1,
-                        "terms": 1,
-                        "tagarr": {         # split tags into an array
-                                    "$split": [{"$substr": [
-                                                        "$Tags", 
-                                                        1, 
-                                                        {"$subtract": [{"$strLenCP": "$Tags"}, 2]}
-                                                    ]
-                                                }, 
-                                                "><"]
-                                    }
-                        }
-        },
+            {"$match": {"PostTypeId":"1"}},
+            {"$project": {
+                            "Id": 1,
+                            "Title": 1,
+                            "CreationDate": 1,
+                            "Score": 1,
+                            "AnswerCount": 1,
+                            "terms": {  
+                                        "$concatArrays": [
 
-        {"$match": { "$or": [ {"terms": {"$regex": kwStr, "$options": "i"}}, {"tagarr": {"$regex": kwStr, "$options": "i"}} ] }},
-        {"$unwind": "$terms"},
-        {"$unwind": "$tagarr"},
-        {"$match": { "$or": [ {"terms": {"$regex": kwStr, "$options": "i"}}, {"tagarr": {"$regex": kwStr, "$options": "i"}} ] }},
-        {"$group": {"_id": "$Id", 
-                    "Title": {"$first": "$Title"},
-                    "CreationDate": {"$first": "$CreationDate"}, 
-                    "Score": {"$first": "$Score"}, 
-                    "AnswerCount": {"$first": "$AnswerCount"},
-                    "match": {"$sum": 1}}},
-        {"$sort": {"match": -1}}
-    ])
+                                                    "$terms",
+                                                    {"$split": [{"$substr": [{"$toLower": "$Tags"}, 1, {"$subtract": [{"$strLenCP": "$Tags"}, 2]}]},"><"]}
+
+                                                    ]
+                                        }
+                            }
+            },
+            {"$match": {"terms": {"$in": kwList}}},
+            {"$unwind": "$terms"},
+            {"$match": {"terms": {"$in": kwList}}},
+            {"$group": {"_id": "$Id",
+                        "Title": {"$first": "$Title"},
+                        "CreationDate": {"$first": "$CreationDate"},
+                        "Score": {"$first": "$Score"},
+                        "AnswerCount": {"$first": "$AnswerCount"},
+                        "match": {"$sum": 1}}},
+            {"$sort": {"match": -1}}
+        ])
 
     
     return list(cursor)
@@ -199,7 +193,7 @@ def availableActions():
     actionDict = OrderedDict()
 
     quesActionDict = OrderedDict()
-    actionDict['wa'] = 'Write an Answer' 
+    actionDict['pa'] = 'Post an Answer' 
     actionDict['la'] = 'List Answers'
     actionDict['vt'] = 'Vote on a post'
     actionDict['bm'] = 'Back to Menu'

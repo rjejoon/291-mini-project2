@@ -8,23 +8,19 @@ db.posts.aggregate([
                     "CreationDate": 1,
                     "Score": 1,
                     "AnswerCount": 1,
-                    "terms": 1,
-                    "tagarr": {         
-                                "$split": [{"$substr": [
-                                                    "$Tags",
-                                                    1,
-                                                    {"$subtract": [{"$strLenCP": "$Tags"}, 2]}
-                                                ]
-                                            },
-                                            "><"]
+                    "terms": {  
+                                "$concatArrays": [
+
+                                            "$terms",
+                                            {"$split": [{"$substr": [{"$toLower": "$Tags"}, 1, {"$subtract": [{"$strLenCP": "$Tags"}, 2]}]},"><"]}
+
+                                            ]
                                 }
                     }
-    }])
-
-    {"$match": { "$or": [ {"terms": {"$regex": kwStr, "$options": "i"}}, {"tagarr": {"$regex": kwStr, "$options": "i"}} ] }},
+    },
+    {"$match": {"terms": {"$in": kwList}}},
     {"$unwind": "$terms"},
-    {"$unwind": "$tagarr"},
-    {"$match": { "$or": [ {"terms": {"$regex": kwStr, "$options": "i"}}, {"tagarr": {"$regex": kwStr, "$options": "i"}} ] }},
+    {"$match": {"terms": {"$in": kwList}}},
     {"$group": {"_id": "$Id",
                 "Title": {"$first": "$Title"},
                 "CreationDate": {"$first": "$CreationDate"},
@@ -34,3 +30,15 @@ db.posts.aggregate([
     {"$sort": {"match": -1}}
 ])
 
+
+
+
+
+                                "$split": [{"$substr": [
+                                                    {"$toLower": "$Tags"},
+                                                    1,
+                                                    {"$subtract": [{"$strLenCP": "$Tags"}, 2]}
+                                                ]
+                                            },
+                                            "><"]
+ 

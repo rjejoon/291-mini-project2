@@ -31,9 +31,8 @@ def main():
 
             if com == 'sq':
                 targetQ, action = searchQ(db)
-                if action == 'wa':
-                    #postAns()
-                    pass
+                if action == 'pa':
+                    postAns(db, uid, targetQ['_id'])
 
                 elif action == 'vp' or (action == 'la' and listAnswers(db['posts'], targetQ)):
                     votePost()

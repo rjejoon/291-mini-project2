@@ -86,6 +86,7 @@ def postAns(db, uid, parentPid):
             valid = True
 
             print()
+            print(pid)
             print("Answer Posted!")
 
         if not valid:
