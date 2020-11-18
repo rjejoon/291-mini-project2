@@ -2,7 +2,7 @@ from pymongo import MongoClient
 
 from phase1.phase1 import getPort
 from phase2.displayReport import displayReport
-from phase2.postQ import postQ
+from phase2.postQA import postQ, postAns
 from phase2.searchQ import searchQ
 
 
@@ -18,7 +18,9 @@ def main():
         displayReport(db, uid)
 
         #postQ(db, uid)
-        searchQ(db)
+        parentPost, action = searchQ(db)
+        #parentPid = parentPost['Id']
+        postAns(db, uid, parentPid)
 
         return 0
 

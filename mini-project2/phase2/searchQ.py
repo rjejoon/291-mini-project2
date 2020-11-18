@@ -4,13 +4,17 @@ from collections import OrderedDict
 def searchQ(db):
 
     posts = db["posts"]
-    kwList = getKeywords()
-    resultList = findMatch(posts,kwList)
+    kwStr = getKeywords()
+    resultList = findMatch(posts,kwStr)
 
+    parentPost = action = None
     if len(resultList) > 0:
         no, action = displaySearchResult(resultList, posts)
+        parentPost = resultList[no]
     else:
         print('error: there is no matching post.')
+    
+    return parentPost, action
 
 
 def getKeywords():
@@ -24,16 +28,16 @@ def getKeywords():
             keyword = keyword.strip()
             if keyword and keyword not in kwList:
                 kwList.append(keyword)
-        
+        kwStr = '|'.join(kwList)
         if len(kwList) > 0:
             valid = True
         else:
             print("error: keywords cannot be empty.")
 
-    return kwList
+    return kwStr
 
 
-def findMatch(posts, kwList):
+def findMatch(posts, kwStr):
 
     cursor = posts.aggregate([
         {"$match": {"PostTypeId":"1"}},
@@ -56,10 +60,10 @@ def findMatch(posts, kwList):
                         }
         },
 
-        {"$match": { "$or": [ {"terms": {"$in": kwList}}, {"tagarr": {"$in": kwList}} ] }},
+        {"$match": { "$or": [ {"terms": {"$regex": kwStr, "$options": "i"}}, {"tagarr": {"$regex": kwStr, "$options": "i"}} ] }},
         {"$unwind": "$terms"},
         {"$unwind": "$tagarr"},
-        {"$match": { "$or": [ {"terms": {"$in": kwList}}, {"tagarr": {"$in": kwList}} ] }},
+        {"$match": { "$or": [ {"terms": {"$regex": kwStr, "$options": "i"}}, {"tagarr": {"$regex": kwStr, "$options": "i"}} ] }},
         {"$group": {"_id": "$Id", 
                     "Title": {"$first": "$Title"},
                     "CreationDate": {"$first": "$CreationDate"}, 
@@ -68,6 +72,7 @@ def findMatch(posts, kwList):
                     "match": {"$sum": 1}}},
         {"$sort": {"match": -1}}
     ])
+
     
     return list(cursor)
 
@@ -133,6 +138,7 @@ def printSearchResult(resultList, currRowIndex, limit=5):
         crdate = currRow['CreationDate']
         score = currRow['Score']
         anscnt = currRow['AnswerCount']
+        match = currRow['match']
         row = ' '
         row += '{:^5} | '.format(str(i+1))
         if len(title) > 37:
@@ -143,6 +149,8 @@ def printSearchResult(resultList, currRowIndex, limit=5):
             score = '0'
         row += '{:^8} | '.format(score)
         row += '{:^15}'.format(anscnt)
+        #TODO delete
+        row += '{:^5}'.format(match)
         print(row)
         print('-'*len(colName))
 
