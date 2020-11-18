@@ -27,12 +27,12 @@ def filterTerms(s: str) -> list:
     for end in range(len(s)):
         if not s[end].isalnum():
             if end - start >= 3:    # len of term must be larger than 3 
-                terms.append(s[start:end])
+                terms.append(s[start:end].lower())
             start = end + 1
 
     # the last term is not added if the last char is alphanumeric.
     if s[end].isalnum():    
         if end - start >= 3:
-            terms.append(s[start:end+1])
+            terms.append(s[start:end+1].lower())
 
     return terms
