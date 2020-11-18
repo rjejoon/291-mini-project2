@@ -2,6 +2,7 @@ import os
 from pymongo import MongoClient
 
 from bcolor.bcolor import bold 
+from bcolor.bcolor import cyan
 from bcolor.bcolor import warning 
 from phase2.getValidInput import getValidInput
 
@@ -24,7 +25,7 @@ def listAnswers(posts, targetQ: dict) -> bool:
     aaId = None
     if 'AcceptedAnswerId' in targetQ:
         aaId = targetQ['AcceptedAnswerId']
-        aaDoc = posts.find({ "Id": { "$eq": aaId }}).next()
+        aaDoc = posts.find_one({ "Id": { "$eq": aaId }})
     
     aDocs = posts.find({"$and": [{ "PostTypeId": "2" },
                                  { "Id": { "$ne": aaId } },
@@ -36,7 +37,7 @@ def listAnswers(posts, targetQ: dict) -> bool:
     i = 0
     if aaDoc:
         ansDocs.append(aaDoc)
-        printAnswerDocumentSimple(aaDoc, i, True)
+        printAnswerDocumentSimple(aaDoc, i, isAA=True)
         i += 1
     
     for doc in aDocs:
@@ -71,21 +72,12 @@ def printAnswerDocumentFull(doc):
         isAA -- bool
     '''
     os.system('clear')
+    del doc['_id']
+    fieldNames = list(doc.keys())
     
-    fields = [
-                'Id', 
-                'PostTypeId', 
-                'ParentId', 
-                'CreationDate', 
-                'Score', 
-                'OwnerUserId',
-                'LastActivityDate', 
-                'CommentCount', 
-                'ContentLicense', 
-                'Body'  
-                        ]
-
-    for f in fields:
+    print(cyan('< Post Info>\n'))
+    # TODO dict is not ordered
+    for f in fieldNames:
         fieldElem = doc[f]
         if f =='CreationDate':
             fieldElem = "{} {} UTC".format(fieldElem[:10], fieldElem[11:])
@@ -115,7 +107,7 @@ def printAnswerDocumentSimple(doc, i, isAA=False):
 
     header = "Answer {}".format(i+1).center(80, '-')
     if isAA:
-        header += ' \N{WHITE MEDIUM STAR}'
+        header += ' ' + '\N{WHITE MEDIUM STAR}'
 
     print(header)
     print()
@@ -137,15 +129,5 @@ def promptAnswerAction() -> bool:
     if i == 'y':
         return True
     return False
-
-
-
-
-
-    
-
-
-
-    
 
 

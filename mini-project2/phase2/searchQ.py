@@ -7,8 +7,8 @@ from bcolor.bcolor import errmsg
 def searchQ(db):
 
     posts = db["posts"]
-    kwStr = getKeywords()
-    resultList = findMatch(posts,kwStr)
+    kwList = getKeywords()
+    resultList = findMatch(posts, kwList)
 
     parentPost = action = None
     if len(resultList) > 0:
@@ -67,6 +67,7 @@ def findMatch(posts, kwList):
             {"$match": {"terms": {"$in": kwList}}},
             {"$group": {"_id": "$Id",
                         "Title": {"$first": "$Title"},
+                        "AcceptedAnswerId": {"$first": "$AcceptedAnswerId"},
                         "CreationDate": {"$first": "$CreationDate"},
                         "Score": {"$first": "$Score"},
                         "AnswerCount": {"$first": "$AnswerCount"},
@@ -167,6 +168,7 @@ def displaySelectedPost(resultList, posts, no):
     posts.update({"Id": targetId}, 
                  {"$inc": {"ViewCount": 1}})
 
+    # TODO dict is not ordered
     targetDoc = posts.find_one({"Id":resultList[no]["_id"]})
     del targetDoc['_id']
     fieldNames = list(targetDoc.keys())
