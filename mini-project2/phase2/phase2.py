@@ -7,7 +7,7 @@ from phase1.phase1 import getPort
 from bcolor.bcolor import errmsg
 from bcolor.bcolor import pink
 from phase2.displayReport import displayReport
-from phase2.postQ import postQ
+from phase2.postQA import postQ, postAns
 from phase2.searchQ import searchQ
 from phase2.listAnswers import listAnswers
 from phase2.votePost import votePost

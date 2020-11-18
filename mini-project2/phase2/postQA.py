@@ -37,13 +37,13 @@ def postQ(db, uid):
                 
             terms = extractTermsFrom(post)
             if len(terms) > 0:
-                post["Terms"] = terms
+                post["terms"] = terms
             
             posts.insert_one(post)
             valid = True
 
             print()
-            print("Posting Completed!")
+            print("Question Posted!")
         
         if not valid:
             prompt = "Do you still want to post a question? [y/n] "
@@ -51,6 +51,49 @@ def postQ(db, uid):
             if uin == 'n':
                 valid = True
 
+
+def postAns(db, uid, parentPid):
+    posts = db['posts']
+    pid = getPID(posts)
+
+    valid = False
+    while not valid:
+        
+        body = input("\nEnter your body text: ")
+        prompt = 'Do you want to post this answer to the selected post? [y/n] '
+        uin = validInput(prompt, ['y','n'])
+
+        if uin == 'y':
+
+            crdate = str(date.today())
+            post = {
+                        "Id": pid,
+                        "PostTypeId": "2",
+                        "ParentId": parentPid,
+                        "CreationDate": crdate,
+                        "Body": body,
+                        "OwnerUserId": uid,
+                        "Score": 0,
+                        "CommentCount": 0,
+                        "ContentLicense": "CC BY-SA 2.5"
+                    }
+
+            terms = extractTermsFrom(post)
+            if len(terms) > 0:
+                post["terms"] = terms
+                
+            posts.insert_one(post)
+            valid = True
+
+            print()
+            print("Answer Posted!")
+
+        if not valid:
+            prompt = "Do you still want to post an answer? [y/n] "
+            uin = validInput(prompt,['y','n'])
+            if uin == 'n':
+                valid = True
+        
 
 def getPID(posts):
     cursor = posts.aggregate([
