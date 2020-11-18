@@ -1,9 +1,11 @@
 import traceback
+import os
 
 from pymongo import MongoClient
 
 from phase1.phase1 import getPort
 from bcolor.bcolor import errmsg
+from bcolor.bcolor import pink
 from phase2.displayReport import displayReport
 from phase2.postQ import postQ
 from phase2.searchQ import searchQ
@@ -21,7 +23,7 @@ def main():
         uid = getUid()
         displayReport(db, uid)
 
-        # TODO make a main loop of the program
+        os.system('clear')
         pressedExit = False
         while not pressedExit:
             printInterface()
@@ -50,7 +52,16 @@ def main():
 
 
 def printInterface():
-    pass
+
+    print(pink('< M E N U >'))
+
+
+
+
+
+
+
+
 
 def getUid() -> str:
     '''
