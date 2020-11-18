@@ -5,7 +5,7 @@ def searchQ(db):
 
     posts = db["posts"]
     kwList = getKeywords()
-    resultList = findMatch(posts,kwList)
+    resultList = findMatch(posts, kwList)
 
     if len(resultList) > 0:
         no, action = displaySearchResult(resultList, posts)
@@ -34,6 +34,8 @@ def getKeywords():
 
 
 def findMatch(posts, kwList):
+
+    # TODO bug: # of matches are too large
 
     cursor = posts.aggregate([
         {"$match": {"PostTypeId":"1"}},
