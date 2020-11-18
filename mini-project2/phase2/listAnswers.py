@@ -1,9 +1,23 @@
+import os
 from pymongo import MongoClient
 
-#from bcolor.bcolor import bold 
+from bcolor.bcolor import bold 
+from bcolor.bcolor import warning 
+from phase2.getValidInput import getValidInput
 
 
-def listAnswers(posts, targetQ: dict):
+def listAnswers(posts, targetQ: dict) -> bool:
+    '''
+    Displays all the answer corresponds to the target question post.
+    An accepted answer is marked with a star.
+    By selecting an answer post, a user can see all the fields in the document.
+
+    Inputs:
+        posts -- pymongo.collection.Collection
+        targetQ -- dict
+    Return:
+        bool
+    '''
 
     # "aa": accepted answer
     aaDoc = None
@@ -16,6 +30,7 @@ def listAnswers(posts, targetQ: dict):
                                  { "Id": { "$ne": aaId } },
                                  { "ParentId": { "$eq": targetQ["_id"] }}]})
 
+    os.system('clear')
     ansDocs = []
 
     i = 0
@@ -31,6 +46,7 @@ def listAnswers(posts, targetQ: dict):
     
     # no answer for the selected question
     if i == 0:
+        print(warning("There is no answer post to this question."))
         return False
 
     interval = "[1]" if i == 1 else "[1-{}]".format(i) 
@@ -40,20 +56,66 @@ def listAnswers(posts, targetQ: dict):
 
     selectedAnsDoc = ansDocs[no]
 
-    # TODO promptAnswerAction()
-    action = promptAnswerAction()
+    printAnswerDocumentFull(selectedAnsDoc)
+
+    return promptAnswerAction()
+
+
+def printAnswerDocumentFull(doc):
+    '''
+    Displays every field in the selected answer document.
+
+    Inputs:
+        doc -- dict
+        i -- int
+        isAA -- bool
+    '''
+    os.system('clear')
+    
+    fields = [
+                'Id', 
+                'PostTypeId', 
+                'ParentId', 
+                'CreationDate', 
+                'Score', 
+                'OwnerUserId',
+                'LastActivityDate', 
+                'CommentCount', 
+                'ContentLicense', 
+                'Body'  
+                        ]
+
+    for f in fields:
+        fieldElem = doc[f]
+        if f =='CreationDate':
+            fieldElem = "{} {} UTC".format(fieldElem[:10], fieldElem[11:])
+        elif f == 'Body':
+            fieldElem = '\n\n' + fieldElem
+
+        print("{}: {}".format(bold(f), fieldElem), end='\n')
+
 
 
 def printAnswerDocumentSimple(doc, i, isAA=False):
+    '''
+    Displays a simple version of the answer document.
 
-    lim = 80
+    Inputs:
+        doc -- dict
+        i -- int
+        isAA -- bool
+    '''
+
+    score = doc['Score']
     crDate = doc['CreationDate']
     crDate = "{} {} UTC".format(crDate[:10], crDate[11:])
+
+    lim = 80
     body = doc['Body'][:lim]
-    score = doc['Score']
+
     header = "Answer {}".format(i+1).center(80, '-')
     if isAA:
-        header += ' ' + "\N{WHITE MEDIUM STAR}"
+        header += ' \N{WHITE MEDIUM STAR}'
 
     print(header)
     print()
@@ -64,36 +126,25 @@ def printAnswerDocumentSimple(doc, i, isAA=False):
     print()
 
 
-def getValidInput(prompt: str, validEntries: list) -> str:
+def promptAnswerAction() -> bool:
+    '''
+    Return True if the user wishes to perform an answer action.
+    Since there is only one answer action, boolean is returned.
+    '''
 
-    while True:
-        entry = input(prompt)
-        if entry in validEntries:
-            return entry
-        print(errmsg("error: invalid entry"))
+    i = getValidInput(warning("Would you like to vote on this answer? [y/n] "), ['y', 'n'])
+
+    if i == 'y':
+        return True
+    return False
 
 
 
-
-# TODO get rid of this function and import from the module
-def bold(s):
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    return BOLD + s + ENDC
 
 
     
 
 
-if __name__ == '__main__':
-
-    client = MongoClient()
-    db = client['291db']
-
-    posts = db['posts']
-
-    postdoc = posts.find_one()
-    listAnswers(posts, postdoc)
 
     
 

@@ -1,5 +1,6 @@
 import sys
-from phase2 import main
+
+from phase2.phase2 import main
 
 
 if __name__ == '__main__':

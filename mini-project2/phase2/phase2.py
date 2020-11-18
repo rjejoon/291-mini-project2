@@ -2,12 +2,14 @@ import traceback
 
 from pymongo import MongoClient
 
-from bcolor.bcolor import errmsg
 from phase1.phase1 import getPort
+from bcolor.bcolor import errmsg
 from phase2.displayReport import displayReport
 from phase2.postQ import postQ
 from phase2.searchQ import searchQ
 from phase2.listAnswers import listAnswers
+from phase2.votePost import votePost
+from phase2.getValidInput import getValidInput 
 
 
 def main():
@@ -22,15 +24,21 @@ def main():
         # TODO make a main loop of the program
         pressedExit = False
         while not pressedExit:
-            com = getValidInput("Enter a command: ", ['s', 'p', 'q'])
+            printInterface()
+            com = getValidInput("Enter a command: ", ['sq', 'pq', 'q'])
 
-            if com == 's':
+            if com == 'sq':
                 targetQ, action = searchQ(db)
-                if action == 'la':
-                    listAnswers(db['posts'], targetQ)
-            elif com == 'p':
+                if action == 'wa':
+                    #postAns()
+                    pass
+
+                elif action == 'vp' or (action == 'la' and listAnswers(db['posts'], targetQ)):
+                    votePost()
+                    
+            elif com == 'pq':
                 postQ(db, uid)
-            elif com == 'q':
+            else:
                 pressedExit = True
 
         return 0
@@ -41,6 +49,8 @@ def main():
 
 
 
+def printInterface():
+    pass
 
 def getUid() -> str:
     '''
@@ -57,10 +67,3 @@ def getUid() -> str:
             print("error: id must a number")
 
 
-def getValidInput(prompt: str, validEntries: list) -> str:
-
-    while True:
-        entry = input(prompt)
-        if entry in validEntries:
-            return entry
-        print(errmsg("error: invalid entry"))
