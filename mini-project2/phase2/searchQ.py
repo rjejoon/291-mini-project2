@@ -47,6 +47,7 @@ def findMatch(posts, kwList):
             {"$match": {"PostTypeId":"1"}},
             {"$project": {
                             "Id": 1,
+                            "AcceptedAnswerId": 1,
                             "Title": 1,
                             "CreationDate": 1,
                             "Score": 1,
@@ -161,20 +162,19 @@ def printSearchResult(resultList, currRowIndex, limit=5):
 def displaySelectedPost(resultList, posts, no):
 
     targetId = {"Id":resultList[no]["_id"]}
-    cursor = posts.aggregate([{"$match": targetId}, {"$project": {"_id": 0, "Id": 1, "ViewCount": 1}}])
-    newViewCount = str(int(cursor.next()['ViewCount'])+1)
 
-    posts.update(targetId, {"$set": {"ViewCount": newViewCount}})
+    # increment the view count by 1
+    posts.update({"Id": targetId}, 
+                 {"$inc": {"ViewCount": 1}})
 
-    target = list(posts.find({"Id":resultList[no]["_id"]}))[0]
-    
-    kwList = ['Id','PostTypeId', 'Title', 'Body', 'Tags', 'CreationDate', 'OwnerUserId', 'Score','ViewCount', 
-        'AnswerCount', 'CommentCount', 'FavoriteCount', 'LastEditorUserId', 'LastEditDate', 'Last Activity Date', 'ContentLicense']
+    targetDoc = posts.find_one({"Id":resultList[no]["_id"]})
+    del targetDoc['_id']
+    fieldNames = list(targetDoc.keys())
 
     print('\nSelected Post Information:')
-    for kw in kwList:
-        if kw in target:
-            print('    • {0}: {1}'.format(kw,target[kw]))
+    for field in fieldNames:
+        if field in targetDoc:
+            print('    • {0}: {1}'.format(field, targetDoc[field]))
     print()
 
     
