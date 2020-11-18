@@ -1,6 +1,9 @@
 from pymongo import MongoClient
 from collections import OrderedDict
 
+from bcolor.bcolor import errmsg
+
+
 def searchQ(db):
 
     posts = db["posts"]
@@ -12,6 +15,7 @@ def searchQ(db):
         no, action = displaySearchResult(resultList, posts)
         parentPost = resultList[no]
     else:
+        # TODO must return 2 things
         print('error: there is no matching post.')
     
     return parentPost, action
@@ -38,6 +42,8 @@ def getKeywords():
 
 
 def findMatch(posts, kwStr):
+
+    # TODO bug: # of matches are too large
 
     cursor = posts.aggregate([
         {"$match": {"PostTypeId":"1"}},
