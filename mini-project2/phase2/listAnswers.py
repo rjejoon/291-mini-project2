@@ -14,7 +14,7 @@ def listAnswers(posts, targetQ: dict):
     
     aDocs = posts.find({"$and": [{ "PostTypeId": "2" },
                                  { "Id": { "$ne": aaId } },
-                                 { "ParentId": { "$eq": targetQ["Id"] }}]})
+                                 { "ParentId": { "$eq": targetQ["_id"] }}]})
 
     ansDocs = []
 
@@ -33,7 +33,7 @@ def listAnswers(posts, targetQ: dict):
     if i == 0:
         return False
 
-    interval = "[1]" if i == 0 else "[1-{}]".format(i) 
+    interval = "[1]" if i == 1 else "[1-{}]".format(i) 
     prompt = "Select an answer {} ".format(interval)
     no = getValidInput(prompt, list(map(str, range(1, i+1))))
     no = int(no) - 1    # to match zero-index

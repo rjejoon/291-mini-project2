@@ -1,5 +1,8 @@
+import traceback
+
 from pymongo import MongoClient
 
+from bcolor.bcolor import errmsg
 from phase1.phase1 import getPort
 from phase2.displayReport import displayReport
 from phase2.postQ import postQ
@@ -21,7 +24,7 @@ def main():
         while not pressedExit:
             com = getValidInput("Enter a command: ", ['s', 'p', 'q'])
 
-            if com == 's'
+            if com == 's':
                 targetQ, action = searchQ(db)
                 if action == 'la':
                     listAnswers(db['posts'], targetQ)
@@ -33,7 +36,7 @@ def main():
         return 0
 
     except Exception as e:
-        print(e)
+        print(traceback.print_exc())
         return 1
 
 

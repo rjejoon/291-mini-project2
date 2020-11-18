@@ -1,6 +1,9 @@
 from pymongo import MongoClient
 from collections import OrderedDict
 
+from bcolor.bcolor import errmsg
+
+
 def searchQ(db):
 
     posts = db["posts"]
@@ -9,8 +12,10 @@ def searchQ(db):
 
     if len(resultList) > 0:
         no, action = displaySearchResult(resultList, posts)
+        return resultList[no], action
     else:
-        print('error: there is no matching post.')
+        # TODO must return 2 things
+        print(errmsg('error: there is no matching post.'))
 
 
 def getKeywords():
