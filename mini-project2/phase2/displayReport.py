@@ -10,32 +10,32 @@ def displayReport(db, uid: str) -> bool:
         # no report is displayed
         return False
 
-    qInfo = getQInfo(db['posts'])
-    aInfo = getAInfo(db['posts'])
-    vInfo = getVInfo(db['votes'])
+    qInfo = getQInfo(db['posts'], uid)
+    aInfo = getAInfo(db['posts'], uid)
+    vInfo = getVInfo(db['posts'], uid)
 
     print()
     header = cyan("Report for user: ") + uid
     print(header)
     print()
 
-    print(bold("Questions"))
+    # TODO What to print if the info is None?
+    print(bold("   Questions"))
     for doc in qInfo:
-        print("   Owned: {} avg score: {}".format(doc['count'], doc['avgScore']))
+        print("      Owned: {} avg score: {}".format(doc['count'], doc['avgScore']))
 
-    print(bold("Answers"))
+    print(bold("   Answers"))
     for doc in aInfo:
-        print("   Owned: {}, avg score: {}".format(doc['count'], doc['avgScore']))
+        print("      Owned: {}, avg score: {}".format(doc['count'], doc['avgScore']))
 
-    print(bold("Votes"))
+    print(bold("   Votes"))
     for doc in vInfo:
-        print("   You got {} votes!".format(doc['count']))
-    print()
+        print("      You got {} votes!".format(doc['count']))
 
     return True
 
 
-def getQInfo(posts):
+def getQInfo(posts, uid):
 
     return posts.aggregate([
                 {"$match": {"$and": [{"OwnerUserId": uid}, 
@@ -46,17 +46,21 @@ def getQInfo(posts):
                 ])
 
 
-def getAInfo(posts):
+def getAInfo(posts, uid):
 
     return posts.aggregate([
                 {"$match": {"$and": [{"OwnerUserId": uid}, 
                                      {"PostTypeId": "2"}]}},
                 {"$group": {"_id": None, 
                             "count": {"$sum": 1},
-                            "avgScore": {"$avg": "$Score"}}}
+                            "avgScore": {"$avg": "$Score"}}},
+                {"$project": { 
+                                "count": { "$ifNull": [ "$count", 0 ]},
+                                "avgScore": { "$ifNull": [ "$avgScore", 0]}
+                             }}
                 ])
 
-def getVInfo(votes):
+def getVInfo(posts, uid):
 
     return posts.aggregate([
                 {"$match": {"OwnerUserId": uid}}, 

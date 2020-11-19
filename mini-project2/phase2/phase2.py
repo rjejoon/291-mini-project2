@@ -64,11 +64,12 @@ def printInterface(uid):
     if uid == '':
         uid = 'anonymous'
 
-    header = "{}    Signed in as: {}\n".format(pink('< M E N U >'), uid)
+    header = "{}    User id: {}\n".format(pink('< M E N U >'), uid)
     pq = "{}ost a {}uestion".format(underline('P'), underline('Q'))
     sq = "{}earch {}uestions".format(underline('S'), underline('Q'))
     q = "{}uit".format(underline('Q'))
 
+    print()
     print(header)
     print("  {}: {}".format(bold('pq'), pq))
     print("  {}: {}".format(bold('sq'), sq))
