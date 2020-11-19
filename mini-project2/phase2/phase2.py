@@ -24,10 +24,10 @@ def main() -> int:
         port = getPort()
         client = MongoClient(port=port)
         db = client['291db']
+        os.system('clear')
         uid = getUid()
         displayReport(db, uid)
 
-        os.system('clear')
         pressedExit = False
         while not pressedExit:
             printInterface(uid)

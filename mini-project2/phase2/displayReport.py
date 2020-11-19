@@ -1,5 +1,8 @@
 from pymongo import MongoClient
 
+from bcolor.bcolor import bold
+from bcolor.bcolor import cyan
+
 
 def displayReport(db, uid: str) -> bool:
 
@@ -7,10 +10,34 @@ def displayReport(db, uid: str) -> bool:
         # no report is displayed
         return False
 
-    posts = db['posts']
-    votes = db['votes']
+    qInfo = getQInfo(db['posts'])
+    aInfo = getAInfo(db['posts'])
+    vInfo = getVInfo(db['votes'])
 
-    qInfo = posts.aggregate([
+    print()
+    header = cyan("Report for user: ") + uid
+    print(header)
+    print()
+
+    print(bold("Questions"))
+    for doc in qInfo:
+        print("   Owned: {} avg score: {}".format(doc['count'], doc['avgScore']))
+
+    print(bold("Answers"))
+    for doc in aInfo:
+        print("   Owned: {}, avg score: {}".format(doc['count'], doc['avgScore']))
+
+    print(bold("Votes"))
+    for doc in vInfo:
+        print("   You got {} votes!".format(doc['count']))
+    print()
+
+    return True
+
+
+def getQInfo(posts):
+
+    return posts.aggregate([
                 {"$match": {"$and": [{"OwnerUserId": uid}, 
                                      {"PostTypeId": "1"}]}},
                 {"$group": {"_id": None, 
@@ -19,7 +46,9 @@ def displayReport(db, uid: str) -> bool:
                 ])
 
 
-    aInfo = posts.aggregate([
+def getAInfo(posts):
+
+    return posts.aggregate([
                 {"$match": {"$and": [{"OwnerUserId": uid}, 
                                      {"PostTypeId": "2"}]}},
                 {"$group": {"_id": None, 
@@ -27,7 +56,9 @@ def displayReport(db, uid: str) -> bool:
                             "avgScore": {"$avg": "$Score"}}}
                 ])
 
-    vInfo = posts.aggregate([
+def getVInfo(votes):
+
+    return posts.aggregate([
                 {"$match": {"OwnerUserId": uid}}, 
                 {"$project": {"Id": 1, "OwnerUserId": 1}},
                 {"$group": { "_id": {"OwnerUserId": "$OwnerUserId"}, "Ids": {"$push": "$Id"}}},
@@ -38,16 +69,4 @@ def displayReport(db, uid: str) -> bool:
                                 "as": "vote_docs"
                             }},
                 {"$project": {"count": {"$size": "$vote_docs"}}}
-            ])
-
-    for doc in qInfo:
-        print(doc)
-    for doc in aInfo:
-        print(doc)
-    for doc in vInfo:
-        print(doc)
-
-
-
-
-
+            ]) 
