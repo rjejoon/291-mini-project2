@@ -18,6 +18,7 @@ def postQ(db, uid):
         validEntry = confirmInfo(title, body, tags)
 
         if validEntry:
+
             post = {
                     "Id": pid,
                     "PostTypeId": "1",
@@ -32,13 +33,14 @@ def postQ(db, uid):
                     "FavoriteCount": 0,
                     "ContentLicense": "CC BY-SA 2.5"
                 }
-            if tags:
-                post["Tags"] = tags
-                
+            
             terms = extractTermsFrom(post)
             if len(terms) > 0:
                 post["terms"] = terms
-            
+
+            if tags:
+                post["Tags"] = tags
+                
             posts.insert_one(post)
             valid = True
 
@@ -108,11 +110,14 @@ def getPID(posts):
 
 def getTags():
     tags = input("Enter zero or more tags, each separated by a comma: ")
-    tagStr = ''
+
+    tagList = []
     for tag in tags.split(','):
         tag = tag.strip()
-        if tag:
-            tagStr += '<'+tag+'>'
+        if tag and not tag in tagList:
+            tagList.append(tag)
+    
+    tagStr = '<'+'><'.join(tagList)+'>'
     
     return tagStr if tagStr else None
 
