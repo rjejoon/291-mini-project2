@@ -47,7 +47,7 @@ def main() -> int:
         print(green("Done!"))
 
         print("Phase 1 complete!")
-        print("It took {:.5f} seconds".format(time.time() - start_time))
+        print("It took {:.5f} seconds.".format(time.time() - start_time))
 
         return 0
 
@@ -58,6 +58,10 @@ def main() -> int:
     except Exception as e:
         print(e)
         return 2
+
+    finally:
+        print("Disconnecting from MongoDB...")
+        client.close()
 
 
 def getPort() -> int:
