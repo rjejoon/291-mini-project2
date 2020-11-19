@@ -1,24 +1,25 @@
 from pymongo import MongoClient
 from collections import OrderedDict
-
-from bcolor.bcolor import errmsg
+from bcolor import bcolor
+import os
 
 
 def searchQ(db):
+    os.system('clear')
+    print(bcolor.pink('< Search for Questions >'))
 
     posts = db["posts"]
     kwStr = getKeywords()
     resultList = findMatch(posts,kwStr)
 
-    parentPost = action = None
+    targetPost = action = None
     if len(resultList) > 0:
         no, action = displaySearchResult(resultList, posts)
-        parentPost = resultList[no]
+        targetPost = resultList[no]
     else:
-        # TODO must return 2 things
-        print('error: there is no matching post.')
+        print(bcolor.errmsg('error: there is no matching post.'))
     
-    return parentPost, action
+    return targetPost, action
 
 
 def getKeywords():
@@ -35,7 +36,7 @@ def getKeywords():
         if len(kwList) > 0:
             valid = True
         else:
-            print("error: keywords cannot be empty.")
+            print(bcolor.errmsg("error: keywords cannot be empty."))
 
     return kwList
 
@@ -162,22 +163,39 @@ def printSearchResult(resultList, currRowIndex, limit=5):
 
     return currRowIndex
 
+
 def displaySelectedPost(resultList, posts, no):
 
-    targetId = {"Id":resultList[no]["_id"]}
-
     # increment the view count by 1
-    posts.update({"Id": targetId}, 
-                 {"$inc": {"ViewCount": 1}})
+    posts.update({"Id": resultList[no]["_id"]}, 
+                {"$inc": {"ViewCount": 1}})
 
     targetDoc = posts.find_one({"Id":resultList[no]["_id"]})
-    del targetDoc['_id']
-    fieldNames = list(targetDoc.keys())
 
-    print('\nSelected Post Information:')
+    fieldNames = [
+                    'Id',
+                    'PostTypeId', 
+                    'AcceptedAnswerId',
+                    'Title', 
+                    'Body', 
+                    'Tags', 
+                    'CreationDate', 
+                    'OwnerUserId', 
+                    'Score',
+                    'ViewCount', 
+                    'AnswerCount', 
+                    'CommentCount', 
+                    'FavoriteCount', 
+                    'LastEditorUserId', 
+                    'LastEditDate', 
+                    'Last Activity Date', 
+                    'ContentLicense'
+                ]
+
+    print(bcolor.cyan('\nSelected Post Information:'))
     for field in fieldNames:
         if field in targetDoc:
-            print('    • {0}: {1}'.format(field, targetDoc[field]))
+            print('{0}: {1}'.format(bcolor.bold(field), targetDoc[field]))
     print()
 
     
@@ -198,7 +216,7 @@ def availableActions():
     quesActionDict = OrderedDict()
     actionDict['pa'] = 'Post an Answer' 
     actionDict['la'] = 'List Answers'
-    actionDict['vt'] = 'Vote on a post'
+    actionDict['vp'] = 'Vote on a post'
     actionDict['bm'] = 'Back to Menu'
 
     return actionDict
@@ -209,5 +227,5 @@ def validInput(prompt, entries):
         i = input(prompt).lower()
         if i in entries:
             return i 
-        print("error: invalid entry\n")
+        print(bcolor.errmsg("error: invalid entry\n"))
 
