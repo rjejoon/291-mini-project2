@@ -1,11 +1,12 @@
 from pymongo import MongoClient
 from datetime import date
 from phase1.extractTermsFrom import extractTermsFrom
+from phase2.getValidInput import getValidInput
 
 
 def postQ(db, uid):
     posts = db['posts']
-    pid = getPID(posts)
+    pid = genPID(posts)
 
     valid = False
     while not valid:
@@ -56,7 +57,7 @@ def postQ(db, uid):
 
 def postAns(db, uid, parentPid):
     posts = db['posts']
-    pid = getPID(posts)
+    pid = genPID(posts)
 
     valid = False
     while not valid:
@@ -98,14 +99,16 @@ def postAns(db, uid, parentPid):
                 valid = True
         
 
-def getPID(posts):
+def genPID(posts) -> str:
+
     cursor = posts.aggregate([
         {"$group": {"_id": None, "maxId": {"$max": {"$toInt": "$Id"}}}}
     ])
-    maxId = cursor.next()['maxId']
-    pid = str(int(maxId)+1)
-
-    return pid
+    maxId = 0
+    for doc in cursor:
+        maxId = doc['maxId']
+    
+    return str(int(maxId)+1)
 
 
 def getTags():
@@ -133,14 +136,7 @@ def confirmInfo(title, body, tags):
     print()
 
     prompt = "Is this correct? [y/n] "
-    uin = validInput(prompt, ['y','n'])
+    uin = getValidInput(prompt, ['y','n'])
 
     return True if uin == 'y' else False
 
-
-def validInput(prompt, entries):
-    while True:
-        i = input(prompt).lower()
-        if i in entries:
-            return i 
-        print("error: invalid entry\n")
