@@ -1,3 +1,5 @@
+import string
+
 
 def extractTermsFrom(postDoc: dict) -> list:
     '''
@@ -24,8 +26,8 @@ def filterTerms(s: str) -> list:
 
     terms = []
     start = 0
-    for end in range(len(s)):
-        if not s[end].isalnum():
+    for end in range(len(s.strip())):
+        if s[end] in string.whitespace or s[end] in string.punctuation:
             if end - start >= 3:    # len of term must be larger than 3 
                 terms.append(s[start:end].lower())
             start = end + 1
