@@ -1,8 +1,11 @@
-from pymongo import MongoClient
 import json
 import time
 import os
+
+from pymongo import MongoClient
+
 from phase1.extractTermsFrom import extractTermsFrom
+from bcolor.bcolor import green
 
 def main() -> int:
 
@@ -27,17 +30,21 @@ def main() -> int:
         for postDoc in postDocs:
             postDoc['terms'] = extractTermsFrom(postDoc)
         posts.insert_many(postDocs)
-        print("Done!\n")
+        print(green("Done!"))
+
+        print("Creating index using terms...")
+        posts.create_index([('terms', 1)])
+        print(green("Done!"))
 
         print("Inserting documents to tags collection...")
         tagsDocs = readDocumentsFrom('Tags.json')
         tags.insert_many(tagsDocs)
-        print("Done!\n")
+        print(green("Done!"))
 
         print("Inserting documents to votes collection...")
         votesDocs = readDocumentsFrom('Votes.json')
         votes.insert_many(votesDocs)
-        print("Done!\n")
+        print(green("Done!"))
 
         print("Phase 1 complete!")
         print("It took {:.5f} seconds".format(time.time() - start_time))
