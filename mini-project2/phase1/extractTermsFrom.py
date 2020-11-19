@@ -30,9 +30,8 @@ def filterTerms(s: str) -> list:
                 terms.append(s[start:end].lower())
             start = end + 1
 
-    # the last term is not added if the last char is alphanumeric.
-    if s[end].isalnum():    
-        if end - start >= 3:
+    if s[end].isalnum(): 
+        if end+1 - start >= 3:
             terms.append(s[start:end+1].lower())
 
     return terms

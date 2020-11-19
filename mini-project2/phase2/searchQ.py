@@ -52,15 +52,18 @@ def findMatch(posts, kwList):
                             "CreationDate": 1,
                             "Score": 1,
                             "AnswerCount": 1,
-                            "terms": {  
-                                        "$concatArrays": [
+                            "terms": {"$cond": {
+                                        "if": {"$not": "$Tags"}, "then": "$terms",
+                                        "else": {  
+                                                "$concatArrays": 
+                                                        [
+                                                            "$terms",
+                                                            {"$split": [{"$substr": [{"$toLower": "$Tags"}, 1, {"$subtract": [{"$strLenCP": "$Tags"}, 2]}]},"><"]}
 
-                                                    "$terms",
-                                                    {"$split": [{"$substr": [{"$toLower": "$Tags"}, 1, {"$subtract": [{"$strLenCP": "$Tags"}, 2]}]},"><"]}
-
-                                                    ]
-                                        }
-                            }
+                                                        ]
+                                                }}
+                                    }
+                        }
             },
             {"$match": {"terms": {"$in": kwList}}},
             {"$unwind": "$terms"},
