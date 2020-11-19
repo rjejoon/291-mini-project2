@@ -1,24 +1,26 @@
-from pymongo import MongoClient
 from datetime import date
+
+from pymongo import MongoClient
+
 from phase1.extractTermsFrom import extractTermsFrom
 from phase2.getValidInput import getValidInput
+from bcolor.bcolor import warning
+from bcolor.bcolor import green
 
 
-def postQ(db, uid):
+def postQ(db, uid) -> bool:
     posts = db['posts']
     pid = genPID(posts)
 
-    valid = False
-    while not valid:
+    posted = None
+    while posted is None:
         
         title = input("\nEnter your title: ")
         body = input("Enter your body text: ")
         tags = getTags()
         crdate = str(date.today())  # TODO use date function built in mongo
 
-        validEntry = confirmInfo(title, body, tags)
-
-        if validEntry:
+        if confirmInfo(title, body, tags):
 
             post = {
                     "Id": pid,
@@ -34,7 +36,12 @@ def postQ(db, uid):
                     "FavoriteCount": 0,
                     "ContentLicense": "CC BY-SA 2.5"
                 }
+
+            # delete OwnerUserId field if user is anonymous
+            if uid == '':
+                del post['OwnerUserId'] 
             
+            # TODO update index
             terms = extractTermsFrom(post)
             if len(terms) > 0:
                 post["terms"] = terms
@@ -43,32 +50,33 @@ def postQ(db, uid):
                 post["Tags"] = tags
                 
             posts.insert_one(post)
-            valid = True
 
             print()
-            print("Question Posted!")
+            print(green("Question Posted!"))
+
+            posted = True
         
-        if not valid:
+        if posted is None:
             prompt = "Do you still want to post a question? [y/n] "
-            uin = validInput(prompt,['y','n'])
-            if uin == 'n':
-                valid = True
+            if getValidInput(prompt, ['y', 'n']) == 'n':
+                posted = False
+
+    return posted
 
 
-def postAns(db, uid, parentPid):
+def postAns(db, uid, parentPid) -> bool:
     posts = db['posts']
     pid = genPID(posts)
 
-    valid = False
-    while not valid:
+    posted = None
+    while posted is None:
         
         body = input("\nEnter your body text: ")
         prompt = 'Do you want to post this answer to the selected post? [y/n] '
-        uin = validInput(prompt, ['y','n'])
+        
+        if getValidInput(prompt, ['y','n']) == 'y':
 
-        if uin == 'y':
-
-            crdate = str(date.today())
+            crdate = str(date.today())  # TODO use mongo date function
             post = {
                         "Id": pid,
                         "PostTypeId": "2",
@@ -81,23 +89,29 @@ def postAns(db, uid, parentPid):
                         "ContentLicense": "CC BY-SA 2.5"
                     }
 
+            # delete OwnerUserId field if user is anonymous
+            if uid == '':
+                del post['OwnerUserId'] 
+
+            # TODO update index
             terms = extractTermsFrom(post)
             if len(terms) > 0:
                 post["terms"] = terms
                 
             posts.insert_one(post)
-            valid = True
 
             print()
             print(pid)
-            print("Answer Posted!")
+            print(green("Answer Posted!"))
 
-        if not valid:
+            posted = True
+
+        if posted is None:
             prompt = "Do you still want to post an answer? [y/n] "
-            uin = validInput(prompt,['y','n'])
-            if uin == 'n':
-                valid = True
+            if getValidInput(prompt, ['y', 'n']) == 'n':
+                posted = False
         
+    return posted
 
 def genPID(posts) -> str:
 
@@ -111,25 +125,27 @@ def genPID(posts) -> str:
     return str(int(maxId)+1)
 
 
-def getTags():
+def getTags() -> str:
+
     tags = input("Enter zero or more tags, each separated by a comma: ")
 
-    tagList = []
-    for tag in tags.split(','):
-        tag = tag.strip()
-        if tag and not tag in tagList:
-            tagList.append(tag)
+    tagSet = {
+                tag.strip()
+                for tag in tags.split(',')
+                if tag != ''
+             }
     
-    tagStr = '<'+'><'.join(tagList)+'>'
-    
-    return tagStr if tagStr else None
+    if len(tagSet) == 0:
+        return ''
+    return '<' + '><'.join(tagSet) + '>'
 
 
-def confirmInfo(title, body, tags):
-    if not tags:
-        tags = 'N/A'
+def confirmInfo(title, body, tags) -> bool:
 
-    print("Please double check your information")
+    tags = 'N/A' if not tags else tags
+
+    print(warning("Please double check your information:"))
+    print()
     print("     Title: {}".format(title))
     print("     Body: {}".format(body))
     print("     Tags: {}".format(tags))
