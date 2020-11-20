@@ -32,8 +32,6 @@ def postQ(db, uid) -> bool:
             if uid == '':
                 del post['OwnerUserId'] 
             
-            # TODO update index
-
             terms = extractTermsFrom(post)
             if len(terms) > 0:
                 post["terms"] = terms
@@ -78,7 +76,6 @@ def postAns(posts, uid, targetPid) -> bool:
             if uid == '':
                 del post['OwnerUserId'] 
 
-            # TODO update index
             terms = extractTermsFrom(post)
             if len(terms) > 0:
                 post["terms"] = terms

@@ -1,6 +1,7 @@
 import json
 import time
 import os
+import traceback
 
 from pymongo import MongoClient
 
@@ -71,8 +72,8 @@ def main() -> int:
         print(e)
         return 1
 
-    except Exception as e:
-        print(e)
+    except:
+        print(traceback.print_exc())
         return 2
 
     finally:
