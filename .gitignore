@@ -3,9 +3,12 @@
 .python-version
 
 # unzipped prereq files
-Votes.json
-Posts.json
-Tags.json
+**/*Votes.json
+**/*Posts.json
+**/*Tags.json
 
 # Byte-compiled
 __pycache__/
+
+# pycharm configs
+.idea/
