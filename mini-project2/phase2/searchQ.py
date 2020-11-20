@@ -43,6 +43,7 @@ def getKeywords():
 
 def findMatch(posts, kwList):
 
+    # TODO query should be instantaneous
 
     cursor = posts.aggregate([
             {"$match": {"PostTypeId":"1"}},
@@ -53,13 +54,13 @@ def findMatch(posts, kwList):
                             "CreationDate": 1,
                             "Score": 1,
                             "AnswerCount": 1,
-                            "terms": {"$cond": {
+                            "terms": {"$cond": {        # changing 'terms' array may cause failure in index searching 
                                         "if": {"$not": "$Tags"}, "then": "$terms",
                                         "else": {  
                                                 "$concatArrays": 
                                                         [
                                                             "$terms",
-                                                            {"$split": [{"$substr": [{"$toLower": "$Tags"}, 1, {"$subtract": [{"$strLenCP": "$Tags"}, 2]}]},"><"]}
+                                                            {"$split": [{"$substr": [{"$toLower": "$Tags"}, 1, {"$subtract": [{"$strLenCP": "$Tags"}, 2]}]},"><"]} 
 
                                                         ]
                                                 }}
@@ -67,7 +68,7 @@ def findMatch(posts, kwList):
                         }
             },
             {"$match": {"terms": {"$in": kwList}}},
-            {"$unwind": "$terms"},
+            {"$unwind": "$terms"},  # overhead
             {"$match": {"terms": {"$in": kwList}}},
             {"$group": {"_id": "$Id",
                         "Title": {"$first": "$Title"},

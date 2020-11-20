@@ -1,11 +1,14 @@
-from pymongo import MongoClient
 from datetime import datetime
-from bcolor import bcolor
+
+from pymongo import MongoClient
+
 from phase1.extractTermsFrom import extractTermsFrom
 from phase2.getValidInput import getValidInput
+from bcolor.bcolor import warning
+from bcolor.bcolor import green
 
 
-def postQ(db, uid):
+def postQ(db, uid) -> bool:
 
     print(bcolor.pink('\n< Post a Question >'))
 
@@ -13,86 +16,91 @@ def postQ(db, uid):
     tagsColl = db['tags']
     pid = genID(postsColl)
 
-    valid = False
-    while not valid:
+    posted = None
+    while posted is None:
         
         title = input("Enter your title: ")
         body = input("Enter your body text: ")
-        tagList, tagStr = getTags()
+        tagStr = getTags()
         crdate = str(datetime.now()).replace(' ', 'T')[:-3]
 
-        validEntry = confirmInfo(title, body, tagStr)
-
-        if validEntry:
+        if confirmInfo(title, body, tagStr):
 
             post = createQDict(pid, crdate, body, title)
+
+            # delete OwnerUserId field if user is anonymous
+            if uid == '':
+                del post['OwnerUserId'] 
             
-            if uid:
-                post["OwnerUserId"] = uid
+            # TODO update index
 
             terms = extractTermsFrom(post)
             if len(terms) > 0:
                 post["terms"] = terms
 
-            if len(tagList) > 0:
+            if tagStr != '':
                 post["Tags"] = tagStr
                 insertTags(tagsColl, tagList)
                 
             postsColl.insert_one(post)
-            valid = True
 
-            print(bcolor.green("\nQuestion Posted!"))
+            print(green("\nQuestion Posted!"))
+
+            posted = True
         
         else:
             prompt = "Do you still want to post a question? [y/n] "
-            uin = validInput(prompt,['y','n'])
-            if uin == 'n':
-                valid = True
-    print()
+            if getValidInput(prompt, ['y', 'n']) == 'n':
+                posted = False
 
+    return posted
+        
 
-def postAns(posts, uid, targetPid):
+def postAns(posts, uid, targetPid) -> bool:
 
     print(bcolor.pink('\n< Post an Answer >'))
 
     pid = genID(posts)
 
-    valid = False
-    while not valid:
+    posted = None
+    while posted is None:
         
         body = input("Enter your body text: ")
         crdate = str(datetime.now()).replace(' ', 'T')[:-3]
 
         prompt = 'Do you want to post this answer to the selected post? [y/n] '
-        uin = validInput(prompt, ['y','n'])
-
-        if uin == 'y':
+        
+        if getValidInput(prompt, ['y','n']) == 'y':
 
             post = createAnsDict(pid, targetPid, crdate, body, uid)
 
-            if uid:
-                post["OwnerUserId"] = uid
+            # delete OwnerUserId field if user is anonymous
+            if uid == '':
+                del post['OwnerUserId'] 
 
+            # TODO update index
             terms = extractTermsFrom(post)
             if len(terms) > 0:
                 post["terms"] = terms
                 
             posts.insert_one(post)
-            valid = True
-
-            print(bcolor.green("\nAnswer Posted!"))
+            print(green("\nAnswer Posted!"))
+            posted = True
 
         else:
             prompt = "Do you still want to post an answer? [y/n] "
-            uin = validInput(prompt,['y','n'])
-            if uin == 'n':
-                valid = True
-    print()
+            if getValidInput(prompt, ['y', 'n']) == 'n':
+                posted = False
+
         
+    return posted
 
-def genID(posts) -> str:
 
-    cursor = posts.aggregate([
+def genID(collName) -> str:
+    '''
+    Finds the larget id in the given collection and Generates a unique id
+    '''
+    cursor = collName.aggregate([
         {"$group": {"_id": None, "maxId": {"$max": {"$toInt": "$Id"}}}}
     ])
     maxId = 0
@@ -102,30 +110,27 @@ def genID(posts) -> str:
     return str(int(maxId)+1)
 
 
-def getTags():
-    '''
-    Prompts the user for the tags and returns tagList and tagStr
-    '''
+def getTags() -> str:
+
     tags = input("Enter zero or more tags, each separated by a comma: ")
 
-    tagList = []
-    for tag in tags.split(','):
-        tag = tag.strip()
-        if tag and not tag in tagList:
-            tagList.append(tag)
-
-    tagStr = ''
-    if len(tagList) > 0:
-        tagStr = '<'+'><'.join(tagList)+'>'
+    tagSet = {
+                tag.strip()
+                for tag in tags.split(',')
+                if tag != ''
+             }
     
-    return tagList, tagStr
+    if len(tagSet) == 0:
+        return ''
+    return '<' + '><'.join(tagSet) + '>'
 
 
-def createQDict(pid, crdate, body, title):
+def createQDict(pid, crdate, body, title, uid):
 
-    post = {
+    return {
                 "Id": pid,
                 "PostTypeId": "1",
+                "OwnerUserId": uid,
                 "CreationDate": crdate,
                 "Score": 0,
                 "ViewCount": 0,
@@ -137,14 +142,13 @@ def createQDict(pid, crdate, body, title):
                 "ContentLicense": "CC BY-SA 2.5"
             }
 
-    return post
-
 
 def createAnsDict(pid, targetPid, crdate, body, uid):
 
-    post = {
+    return {
                 "Id": pid,
                 "PostTypeId": "2",
+                "OwnerUserId": uid,
                 "ParentId": targetPid,
                 "CreationDate": crdate,
                 "Body": body,
@@ -153,7 +157,6 @@ def createAnsDict(pid, targetPid, crdate, body, uid):
                 "ContentLicense": "CC BY-SA 2.5"
             }
     
-    return post
 
 
 def insertTags(tagsColl, tags):
@@ -175,11 +178,12 @@ def insertTags(tagsColl, tags):
             tagsColl.insert_one(tag)
 
 
-def confirmInfo(title, body, tags):
-    if not tags:
-        tags = 'N/A'
+def confirmInfo(title, body, tags) -> bool:
 
-    print(bcolor.bold("\nPlease double check your information:"))
+    tags = 'N/A' if not tags else tags
+
+    print(warning("Please double check your information:"))
+    print()
     print("     Title: {}".format(title))
     print("     Body: {}".format(body))
     print("     Tags: {}".format(tags))

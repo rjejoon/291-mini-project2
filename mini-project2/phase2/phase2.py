@@ -37,7 +37,8 @@ def main() -> int:
                 targetQ, action = searchQ(db)
 
                 if action == 'pa':
-                    postAns(db, uid, targetQ['_id'])
+
+                    postAns(db['posts'], uid, targetQ['_id'])
 
                 elif action == 'vp' or (action == 'la' and listAnswers(db['posts'], targetQ)):
                     votePost(db['votes'], uid, targetQ['_id'])

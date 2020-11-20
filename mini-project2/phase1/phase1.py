@@ -25,6 +25,7 @@ def main() -> int:
         tags = db['tags']
         votes = db['votes']
 
+        # TODO reduce insertion time. current : 120-140 sec
         print("Inserting documents to posts collection...")
         postDocs = readDocumentsFrom('Posts.json')
         for postDoc in postDocs:
@@ -82,6 +83,7 @@ def readDocumentsFrom(filename: str) -> list:
     '''
     Reads a specified json file and returns the list of documents.
     '''
+    # TODO handle if 'data' dir not exists
     fpath = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data', filename)
     collName = filename[:-5].lower()
     with open(fpath, 'r') as f:
