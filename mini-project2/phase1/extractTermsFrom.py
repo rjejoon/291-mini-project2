@@ -6,39 +6,40 @@ def extractTermsFrom(postDoc: dict) -> list:
     Extracts unique terms from the title and body if those fields exist in the given post document, 
     and returns them in a list.
     '''
-    title = []
+    terms = []
     if 'Title' in postDoc:
-        title = filterTerms(postDoc['Title'])
+        filterTerms(terms, postDoc['Title'])
         
-    body = []
     if 'Body' in postDoc:
-        body = filterTerms(postDoc['Body'])
+        filterTerms(terms, postDoc['Body'])
 
-    tag = []
     if 'Tags' in postDoc:
-        tag = filterTerms(postDoc['Tags'])
+        filterTerms(terms, postDoc['Tags'])
 
-    return title + body + tag
+    return terms
 
 
-def filterTerms(s: str) -> list:
+def filterTerms(terms: list, s: str):
     '''
     Filters out alphanumeric terms that are at least 3 chars long from the given string and
     returns only the unique ones.
     '''
-    if len(s) <= 0:
-        return [] 
+    if len(s) == 0:
+        return 
 
-    terms = [] 
-    start = 0
-    for end in range(len(s.strip())):
-        if s[end] in string.whitespace or s[end] in string.punctuation:
-            if end - start >= 3:    # len of term must be larger than 3 
-                terms.append(s[start:end].lower())
-            start = end + 1
+    start = 0       
+    i = 0
+    for i in range(len(s.strip())):
+        if s[i] in string.whitespace or s[i] in string.punctuation:
+            if i - start >= 3:    # len of term must be larger than 3 
+                terms.append(s[start:i].lower())
+            start = i + 1
 
-    if s[end].isalnum(): 
-        if end+1 - start >= 3:
-            terms.append(s[start:end+1].lower())
+    if s[i].isalnum(): 
+        if (i - start) + 1 >= 3:
+            terms.append(s[start:i+1].lower())
 
-    return terms
+
+
+
+    
