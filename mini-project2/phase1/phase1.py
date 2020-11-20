@@ -26,26 +26,41 @@ def main() -> int:
         votes = db['votes']
 
         # TODO reduce insertion time. current : 120-140 sec
+        st = time.time()
         print("Inserting documents to posts collection...")
         postDocs = readDocumentsFrom('Posts.json')
+        print("Reading Posts.json took {:.5f} seconds.".format(time.time() - st))
+
+        st = time.time()
         for postDoc in postDocs:
             postDoc['terms'] = extractTermsFrom(postDoc)
+        print("Extracting terms took {:.5f} seconds.".format(time.time() - st))
+
+        st = time.time()
         posts.insert_many(postDocs)
         print(green("Done!"))
+        print("Inserting Post documents took {:.5f} seconds.".format(time.time() - st))
 
+        st = time.time()
         print("Creating index using terms...")
         posts.create_index([('terms', 1)])
         print(green("Done!"))
+        print("Creating index took {:.5f} seconds.".format(time.time() - st))
 
         print("Inserting documents to tags collection...")
         tagsDocs = readDocumentsFrom('Tags.json')
         tags.insert_many(tagsDocs)
         print(green("Done!"))
 
+        st = time.time()
         print("Inserting documents to votes collection...")
         votesDocs = readDocumentsFrom('Votes.json')
+        print("Reading Votes.json took {:.5f} seconds.".format(time.time() - st))
+
+        st = time.time()
         votes.insert_many(votesDocs)
         print(green("Done!"))
+        votesDocs = readDocumentsFrom('Votes.json')
 
         print("Phase 1 complete!")
         print("It took {:.5f} seconds.".format(time.time() - start_time))

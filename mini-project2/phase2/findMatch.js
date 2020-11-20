@@ -4,6 +4,7 @@
 db.posts.aggregate([            
             {"$match": {"$and": [{"terms": {"$in": kwList}},
                                 {"PostTypeId":"1"}]}},
+            {}
             {"$project": {
                 "Id" : 1,
                 "Title": 1,
