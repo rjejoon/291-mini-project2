@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 
 from pymongo import MongoClient
 
@@ -9,85 +9,70 @@ from bcolor.bcolor import green
 
 
 def postQ(db, uid) -> bool:
-    posts = db['posts']
-    pid = genPID(posts)
+
+    print(bcolor.pink('\n< Post a Question >'))
+
+    postsColl = db['posts']
+    tagsColl = db['tags']
+    pid = genID(postsColl)
 
     posted = None
     while posted is None:
         
-        title = input("\nEnter your title: ")
+        title = input("Enter your title: ")
         body = input("Enter your body text: ")
-        tags = getTags()
-        crdate = str(date.today())  # TODO use date function built in mongo
+        tagStr = getTags()
+        crdate = str(datetime.now()).replace(' ', 'T')[:-3]
 
-        if confirmInfo(title, body, tags):
+        if confirmInfo(title, body, tagStr):
 
-            post = {
-                    "Id": pid,
-                    "PostTypeId": "1",
-                    "CreationDate": crdate,
-                    "Score": 0,
-                    "ViewCount": 0,
-                    "Body": body,
-                    "OwnerUserId": uid,
-                    "Title": title,
-                    "AnswerCount": 0,
-                    "CommentCount": 0,
-                    "FavoriteCount": 0,
-                    "ContentLicense": "CC BY-SA 2.5"
-                }
+            post = createQDict(pid, crdate, body, title)
 
             # delete OwnerUserId field if user is anonymous
             if uid == '':
                 del post['OwnerUserId'] 
             
             # TODO update index
+
             terms = extractTermsFrom(post)
             if len(terms) > 0:
                 post["terms"] = terms
 
-            if tags:
-                post["Tags"] = tags
+            if tagStr != '':
+                post["Tags"] = tagStr
+                insertTags(tagsColl, tagList)
                 
-            posts.insert_one(post)
+            postsColl.insert_one(post)
 
-            print()
-            print(green("Question Posted!"))
+            print(green("\nQuestion Posted!"))
 
             posted = True
         
-        if posted is None:
+        else:
             prompt = "Do you still want to post a question? [y/n] "
             if getValidInput(prompt, ['y', 'n']) == 'n':
                 posted = False
 
     return posted
+        
 
+def postAns(posts, uid, targetPid) -> bool:
 
-def postAns(db, uid, parentPid) -> bool:
-    posts = db['posts']
-    pid = genPID(posts)
+    print(bcolor.pink('\n< Post an Answer >'))
+
+    pid = genID(posts)
 
     posted = None
     while posted is None:
         
-        body = input("\nEnter your body text: ")
+        body = input("Enter your body text: ")
+        crdate = str(datetime.now()).replace(' ', 'T')[:-3]
+
         prompt = 'Do you want to post this answer to the selected post? [y/n] '
         
         if getValidInput(prompt, ['y','n']) == 'y':
 
-            crdate = str(date.today())  # TODO use mongo date function
-            post = {
-                        "Id": pid,
-                        "PostTypeId": "2",
-                        "ParentId": parentPid,
-                        "CreationDate": crdate,
-                        "Body": body,
-                        "OwnerUserId": uid,
-                        "Score": 0,
-                        "CommentCount": 0,
-                        "ContentLicense": "CC BY-SA 2.5"
-                    }
+            post = createAnsDict(pid, targetPid, crdate, body, uid)
 
             # delete OwnerUserId field if user is anonymous
             if uid == '':
@@ -99,23 +84,23 @@ def postAns(db, uid, parentPid) -> bool:
                 post["terms"] = terms
                 
             posts.insert_one(post)
-
-            print()
-            print(pid)
-            print(green("Answer Posted!"))
-
+            print(green("\nAnswer Posted!"))
             posted = True
 
-        if posted is None:
+        else:
             prompt = "Do you still want to post an answer? [y/n] "
             if getValidInput(prompt, ['y', 'n']) == 'n':
                 posted = False
+
         
     return posted
 
-def genPID(posts) -> str:
 
-    cursor = posts.aggregate([
+def genID(collName) -> str:
+    '''
+    Finds the larget id in the given collection and Generates a unique id
+    '''
+    cursor = collName.aggregate([
         {"$group": {"_id": None, "maxId": {"$max": {"$toInt": "$Id"}}}}
     ])
     maxId = 0
@@ -138,6 +123,59 @@ def getTags() -> str:
     if len(tagSet) == 0:
         return ''
     return '<' + '><'.join(tagSet) + '>'
+
+
+def createQDict(pid, crdate, body, title, uid):
+
+    return {
+                "Id": pid,
+                "PostTypeId": "1",
+                "OwnerUserId": uid,
+                "CreationDate": crdate,
+                "Score": 0,
+                "ViewCount": 0,
+                "Body": body,
+                "Title": title,
+                "AnswerCount": 0,
+                "CommentCount": 0,
+                "FavoriteCount": 0,
+                "ContentLicense": "CC BY-SA 2.5"
+            }
+
+
+def createAnsDict(pid, targetPid, crdate, body, uid):
+
+    return {
+                "Id": pid,
+                "PostTypeId": "2",
+                "OwnerUserId": uid,
+                "ParentId": targetPid,
+                "CreationDate": crdate,
+                "Body": body,
+                "Score": 0,
+                "CommentCount": 0,
+                "ContentLicense": "CC BY-SA 2.5"
+            }
+    
+
+
+def insertTags(tagsColl, tags):
+    '''
+    Checks if the tags the user has entered already exists in tags collection
+    Increments its count by one if exists; otherwise inserts a new doc with the tagName provided in the collection
+    '''
+    for tagName in tags:
+        cursor = tagsColl.find_one({"TagName": tagName})
+        if cursor:
+            tagsColl.update({"TagName": tagName},{"$inc": {"Count": 1}})
+        else:
+            tagId = genID(tagsColl)
+            tag = {
+                "Id": tagId,
+                "TagName": tagName,
+                "Count": 1
+            }
+            tagsColl.insert_one(tag)
 
 
 def confirmInfo(title, body, tags) -> bool:
