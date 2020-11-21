@@ -4,9 +4,11 @@ import os
 import traceback
 
 from pymongo import MongoClient
+from pymongo.collation import Collation
 
 from phase1.extractTermsFrom import extractTermsFrom
-from bcolor.bcolor import green
+from bcolor.bcolor import green, warning
+
 
 def main() -> int:
 
@@ -26,42 +28,35 @@ def main() -> int:
         tags = db['tags']
         votes = db['votes']
 
-        # TODO reduce insertion time. current : 120-140 sec
+        # TODO reduce insertion time. current : 160 sec
+        print("\nSearching and loading three json files...")
         st = time.time()
-        print("Inserting documents to posts collection...")
-        postDocs = readDocumentsFrom('Posts.json')
-        print("Reading Posts.json took {:.5f} seconds.".format(time.time() - st))
+        postDocs, tagDocs, voteDocs = loadAllDocumentsFrom('Posts.json', 'Tags.json', 'Votes.json')
+        print(green("Done!"))
+        print("Loading took {:.5f} seconds.\n".format(time.time() - st))
 
+        print("Extracting terms from posts documents...")
         st = time.time()
         for postDoc in postDocs:
             postDoc['terms'] = extractTermsFrom(postDoc)
-        print("Extracting terms took {:.5f} seconds.".format(time.time() - st))
+        print(green("Done!"))
+        print("Extracting terms took {:.5f} seconds.\n".format(time.time() - st))
 
+        print("Inserting documents to collections...")
         st = time.time()
         posts.insert_many(postDocs)
+        tags.insert_many(tagDocs)
+        votes.insert_many(voteDocs)
         print(green("Done!"))
-        print("Inserting Post documents took {:.5f} seconds.".format(time.time() - st))
+        print("Insertion took {:.5f} seconds.\n".format(time.time() - st))
 
         st = time.time()
         print("Creating index using terms...")
-        posts.create_index([('terms', 1)])
+        posts.create_index([('terms', 1)],
+                            collation=Collation(locale='en',
+                                                strength=2))    # for case=insensitive
         print(green("Done!"))
-        print("Creating index took {:.5f} seconds.".format(time.time() - st))
-
-        print("Inserting documents to tags collection...")
-        tagsDocs = readDocumentsFrom('Tags.json')
-        tags.insert_many(tagsDocs)
-        print(green("Done!"))
-
-        st = time.time()
-        print("Inserting documents to votes collection...")
-        votesDocs = readDocumentsFrom('Votes.json')
-        print("Reading Votes.json took {:.5f} seconds.".format(time.time() - st))
-
-        st = time.time()
-        votes.insert_many(votesDocs)
-        print(green("Done!"))
-        votesDocs = readDocumentsFrom('Votes.json')
+        print("Indexing took {:.5f} seconds.\n".format(time.time() - st))
 
         print("Phase 1 complete!")
         print("It took {:.5f} seconds.".format(time.time() - start_time))
@@ -95,17 +90,40 @@ def getPort() -> int:
     return int(port)
 
 
-def readDocumentsFrom(filename: str) -> list:
+def loadAllDocumentsFrom(*args) -> list:
     '''
-    Reads a specified json file and returns the list of documents.
+    Reads json files and returns the list of MongoDB documents corresponding to each file.
     '''
-    # TODO handle if 'data' dir not exists
-    fpath = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data', filename)
-    collName = filename[:-5].lower()
-    with open(fpath, 'r') as f:
-        data = json.load(f)
+    desired_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data')
+    dirs_to_test = [desired_dir]
+    # search from the root dir to 'data' (4 levels)
+    for _ in range(3):
+        desired_dir = os.path.dirname(desired_dir)
+        dirs_to_test.append(desired_dir)
 
-    return data[collName]['row'] 
+    dir_path = None
+    for temp_dir in dirs_to_test:
+        if jsonFilesExistIn(temp_dir, args):
+            dir_path = temp_dir	
+    print(warning("Found {} json files in {}".format(len(args), dir_path)))
+
+    if dir_path is None:
+        raise Exception("could not find json files")
+            
+    return [serializeDocumentsFrom(dir_path, f_name) for f_name in args]
+
+
+def serializeDocumentsFrom(dir_path, f_name):
+	
+    collName = f_name[:-5].lower()
+    print("Loading {}...".format(f_name))
+    with open(os.path.join(dir_path, f_name), 'r') as f:
+        return json.load(f)[collName]['row']
+    
+	
+def jsonFilesExistIn(dir_path, filenames):
+	
+    return all((os.path.isfile(os.path.join(dir_path, f_name)) for f_name in filenames))
 
 
 
