@@ -1,5 +1,5 @@
 
-cpdef set extractTermsFrom(dict postDoc):
+cpdef list extractTermsFrom(dict postDoc):
     '''
     Extracts unique terms from the title and body if those fields exist in the given post document, 
     and returns them in a list.
@@ -14,7 +14,7 @@ cpdef set extractTermsFrom(dict postDoc):
     if 'Tags' in postDoc:
         filterTerms(terms, postDoc['Tags'])
 
-    return terms
+    return list(terms)
 
 
 cdef void filterTerms(set terms, str s):

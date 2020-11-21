@@ -38,7 +38,7 @@ def main() -> int:
         print("Extracting terms from posts documents...")
         st = time.time()
         for postDoc in postDocs:
-            postDoc['terms'] = list(extractTermsFrom(postDoc))
+            postDoc['terms'] = extractTermsFrom(postDoc)
         print(green("Done!"))
         print("Extracting terms took {:.5f} seconds.\n".format(time.time() - st))
 
