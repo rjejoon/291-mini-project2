@@ -45,13 +45,14 @@ def getKeywords():
 
 def findMatch(posts, kwList):
 
-    cursor = posts.aggregate([
-            {"$match": {"$and": [{"terms": {"$in": kwList}},
-                                {"PostTypeId":"1"}]}}
-    ])
+    cursor = posts.find(
+             {"$and": [{"terms": {"$in": kwList}},
+                                {"PostTypeId":"1"}]}
+             ).collation({"locale": "en", "strength":2})    # collation strength :2 --> case-insensitive
 
     st = time.time()
     resultList = list(cursor)
+    # TODO matches
     for kw in kwList:
         for doc in resultList:
             doc['match'] = doc['terms'].count(kw)
@@ -59,7 +60,7 @@ def findMatch(posts, kwList):
     resultList.sort(key=lambda doc:doc['match'], reverse=True)
     print(len(resultList))
 
-    print("It took {:5} seconds.".format(time.time() - st))
+    print("Searching took {:5} seconds.".format(time.time() - st))
 
     return resultList
 
