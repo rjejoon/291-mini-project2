@@ -3,7 +3,13 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "depends": [],
+        "extra_compile_args": [
+            "-std=c++11",
+            "-mmacosx-version-min=10.9",
+            "-D_hypot=hypot",
+            "-stdlib=libc++"
+        ],
+        "language": "c++",
         "name": "mini_project2.phase1.extractTermsFrom",
         "sources": [
             "mini_project2/phase1/extractTermsFrom.pyx"
@@ -297,19 +303,33 @@ END: Cython Metadata */
   #endif
 #endif
 
+#ifndef __cplusplus
+  #error "Cython files generated with the C++ option must be compiled with a C++ compiler."
+#endif
 #ifndef CYTHON_INLINE
   #if defined(__clang__)
     #define CYTHON_INLINE __inline__ __attribute__ ((__unused__))
-  #elif defined(__GNUC__)
-    #define CYTHON_INLINE __inline__
-  #elif defined(_MSC_VER)
-    #define CYTHON_INLINE __inline
-  #elif defined (__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-    #define CYTHON_INLINE inline
   #else
-    #define CYTHON_INLINE
+    #define CYTHON_INLINE inline
   #endif
 #endif
+template<typename T>
+void __Pyx_call_destructor(T& x) {
+    x.~T();
+}
+template<typename T>
+class __Pyx_FakeReference {
+  public:
+    __Pyx_FakeReference() : ptr(NULL) { }
+    __Pyx_FakeReference(const T& ref) : ptr(const_cast<T*>(&ref)) { }
+    T *operator->() { return ptr; }
+    T *operator&() { return ptr; }
+    operator T&() { return *ptr; }
+    template<typename U> bool operator ==(U other) { return *ptr == other; }
+    template<typename U> bool operator !=(U other) { return *ptr != other; }
+  private:
+    T *ptr;
+};
 
 #if CYTHON_COMPILING_IN_PYPY && PY_VERSION_HEX < 0x02070600 && !defined(Py_OptimizeFlag)
   #define Py_OptimizeFlag 0
@@ -618,23 +638,6 @@ static CYTHON_INLINE float __PYX_NAN() {
 #define __PYX_HAVE__mini_project2__phase1__extractTermsFrom
 #define __PYX_HAVE_API__mini_project2__phase1__extractTermsFrom
 /* Early includes */
-#include "ios"
-#include "new"
-#include "stdexcept"
-#include "typeinfo"
-#include <utility>
-
-    #if __cplusplus > 199711L
-    #include <type_traits>
-
-    namespace cython_std {
-    template <typename T> typename std::remove_reference<T>::type&& move(T& t) noexcept { return std::move(t); }
-    template <typename T> typename std::remove_reference<T>::type&& move(T&& t) noexcept { return std::move(t); }
-    }
-
-    #endif
-    
-#include <set>
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -1019,23 +1022,6 @@ static CYTHON_INLINE PyObject *__Pyx_PyCFunction_FastCall(PyObject *func, PyObje
 /* PyObjectCallOneArg.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
 
-/* ListAppend.proto */
-#if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
-static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
-    PyListObject* L = (PyListObject*) list;
-    Py_ssize_t len = Py_SIZE(list);
-    if (likely(L->allocated > len) & likely(len > (L->allocated >> 1))) {
-        Py_INCREF(x);
-        PyList_SET_ITEM(list, len, x);
-        __Pyx_SET_SIZE(list, len + 1);
-        return 0;
-    }
-    return PyList_Append(list, x);
-}
-#else
-#define __Pyx_PyList_Append(L,x) PyList_Append(L,x)
-#endif
-
 /* PyThreadStateGet.proto */
 #if CYTHON_FAST_THREAD_STATE
 #define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
@@ -1076,6 +1062,9 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
 static void __Pyx_WriteUnraisable(const char *name, int clineno,
                                   int lineno, const char *filename,
                                   int full_traceback, int nogil);
+
+/* Import.proto */
+static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
 
 /* PyDictVersioning.proto */
 #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
@@ -1164,10 +1153,6 @@ static int __Pyx_check_binary_version(void);
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 
-/* Module declarations from 'libcpp.utility' */
-
-/* Module declarations from 'libcpp.set' */
-
 /* Module declarations from 'mini_project2.phase1.extractTermsFrom' */
 static PyObject *__pyx_f_13mini_project2_6phase1_16extractTermsFrom_extractTermsFrom(PyObject *, int __pyx_skip_dispatch); /*proto*/
 static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObject *, PyObject *); /*proto*/
@@ -1179,18 +1164,22 @@ int __pyx_module_is_main_mini_project2__phase1__extractTermsFrom = 0;
 static PyObject *__pyx_builtin_range;
 static const char __pyx_k_Body[] = "Body";
 static const char __pyx_k_Tags[] = "Tags";
+static const char __pyx_k_json[] = "json";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_Title[] = "Title";
 static const char __pyx_k_range[] = "range";
+static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_isalnum[] = "isalnum";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static PyObject *__pyx_n_s_Body;
 static PyObject *__pyx_n_s_Tags;
 static PyObject *__pyx_n_s_Title;
 static PyObject *__pyx_n_s_cline_in_traceback;
+static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_isalnum;
+static PyObject *__pyx_n_s_json;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_n_s_range;
@@ -1199,16 +1188,16 @@ static PyObject *__pyx_pf_13mini_project2_6phase1_16extractTermsFrom_extractTerm
 /* Late includes */
 
 /* "mini_project2/phase1/extractTermsFrom.pyx":3
- * from libcpp.set cimport set
+ * import json
  * 
- * cpdef list extractTermsFrom(dict postDoc):             # <<<<<<<<<<<<<<
+ * cpdef set extractTermsFrom(dict postDoc):             # <<<<<<<<<<<<<<
  *     '''
  *     Extracts unique terms from the title and body if those fields exist in the given post document,
  */
 
 static PyObject *__pyx_pw_13mini_project2_6phase1_16extractTermsFrom_1extractTermsFrom(PyObject *__pyx_self, PyObject *__pyx_v_postDoc); /*proto*/
 static PyObject *__pyx_f_13mini_project2_6phase1_16extractTermsFrom_extractTermsFrom(PyObject *__pyx_v_postDoc, CYTHON_UNUSED int __pyx_skip_dispatch) {
-  PyObject *__pyx_v_terms = NULL;
+  PyObject *__pyx_v_terms = 0;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1222,18 +1211,18 @@ static PyObject *__pyx_f_13mini_project2_6phase1_16extractTermsFrom_extractTerms
   /* "mini_project2/phase1/extractTermsFrom.pyx":8
  *     and returns them in a list.
  *     '''
- *     terms = []             # <<<<<<<<<<<<<<
+ *     cdef set terms = set()             # <<<<<<<<<<<<<<
  *     if 'Title' in postDoc:
  *         filterTerms(terms, postDoc['Title'])
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_t_1 = PySet_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_terms = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
   /* "mini_project2/phase1/extractTermsFrom.pyx":9
  *     '''
- *     terms = []
+ *     cdef set terms = set()
  *     if 'Title' in postDoc:             # <<<<<<<<<<<<<<
  *         filterTerms(terms, postDoc['Title'])
  * 
@@ -1247,7 +1236,7 @@ static PyObject *__pyx_f_13mini_project2_6phase1_16extractTermsFrom_extractTerms
   if (__pyx_t_3) {
 
     /* "mini_project2/phase1/extractTermsFrom.pyx":10
- *     terms = []
+ *     cdef set terms = set()
  *     if 'Title' in postDoc:
  *         filterTerms(terms, postDoc['Title'])             # <<<<<<<<<<<<<<
  * 
@@ -1265,7 +1254,7 @@ static PyObject *__pyx_f_13mini_project2_6phase1_16extractTermsFrom_extractTerms
 
     /* "mini_project2/phase1/extractTermsFrom.pyx":9
  *     '''
- *     terms = []
+ *     cdef set terms = set()
  *     if 'Title' in postDoc:             # <<<<<<<<<<<<<<
  *         filterTerms(terms, postDoc['Title'])
  * 
@@ -1367,9 +1356,9 @@ static PyObject *__pyx_f_13mini_project2_6phase1_16extractTermsFrom_extractTerms
   goto __pyx_L0;
 
   /* "mini_project2/phase1/extractTermsFrom.pyx":3
- * from libcpp.set cimport set
+ * import json
  * 
- * cpdef list extractTermsFrom(dict postDoc):             # <<<<<<<<<<<<<<
+ * cpdef set extractTermsFrom(dict postDoc):             # <<<<<<<<<<<<<<
  *     '''
  *     Extracts unique terms from the title and body if those fields exist in the given post document,
  */
@@ -1437,7 +1426,7 @@ static PyObject *__pyx_pf_13mini_project2_6phase1_16extractTermsFrom_extractTerm
 /* "mini_project2/phase1/extractTermsFrom.pyx":21
  * 
  * 
- * cdef void filterTerms(list terms, str s):             # <<<<<<<<<<<<<<
+ * cdef void filterTerms(set terms, str s):             # <<<<<<<<<<<<<<
  *     '''
  *     Filters out alphanumeric terms that are at least 3 chars long from the given string and
  */
@@ -1524,7 +1513,7 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
  *     for i in range(len(s)):
  *         if not s[i].isalnum():             # <<<<<<<<<<<<<<
  *             if i - start >= 3:    # len of term must be larger than 3
- *                 terms.append(s[start:i])
+ *                 terms.add(s[start:i])
  */
     __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_s, __pyx_v_i, unsigned int, 0, __Pyx_PyInt_From_unsigned_int, 0, 0, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 33, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
@@ -1555,7 +1544,7 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
  *     for i in range(len(s)):
  *         if not s[i].isalnum():
  *             if i - start >= 3:    # len of term must be larger than 3             # <<<<<<<<<<<<<<
- *                 terms.append(s[start:i])
+ *                 terms.add(s[start:i])
  *             start = i + 1
  */
       __pyx_t_8 = (((__pyx_v_i - __pyx_v_start) >= 3) != 0);
@@ -1564,12 +1553,12 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
         /* "mini_project2/phase1/extractTermsFrom.pyx":35
  *         if not s[i].isalnum():
  *             if i - start >= 3:    # len of term must be larger than 3
- *                 terms.append(s[start:i])             # <<<<<<<<<<<<<<
+ *                 terms.add(s[start:i])             # <<<<<<<<<<<<<<
  *             start = i + 1
  * 
  */
         if (unlikely(__pyx_v_terms == Py_None)) {
-          PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
+          PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "add");
           __PYX_ERR(0, 35, __pyx_L1_error)
         }
         if (unlikely(__pyx_v_s == Py_None)) {
@@ -1578,21 +1567,21 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
         }
         __pyx_t_5 = PySequence_GetSlice(__pyx_v_s, __pyx_v_start, __pyx_v_i); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 35, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_terms, __pyx_t_5); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 35, __pyx_L1_error)
+        __pyx_t_9 = PySet_Add(__pyx_v_terms, __pyx_t_5); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 35, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
         /* "mini_project2/phase1/extractTermsFrom.pyx":34
  *     for i in range(len(s)):
  *         if not s[i].isalnum():
  *             if i - start >= 3:    # len of term must be larger than 3             # <<<<<<<<<<<<<<
- *                 terms.append(s[start:i])
+ *                 terms.add(s[start:i])
  *             start = i + 1
  */
       }
 
       /* "mini_project2/phase1/extractTermsFrom.pyx":36
  *             if i - start >= 3:    # len of term must be larger than 3
- *                 terms.append(s[start:i])
+ *                 terms.add(s[start:i])
  *             start = i + 1             # <<<<<<<<<<<<<<
  * 
  *     if s[i].isalnum() and (i - start) + 1 >= 3:
@@ -1604,7 +1593,7 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
  *     for i in range(len(s)):
  *         if not s[i].isalnum():             # <<<<<<<<<<<<<<
  *             if i - start >= 3:    # len of term must be larger than 3
- *                 terms.append(s[start:i])
+ *                 terms.add(s[start:i])
  */
     }
   }
@@ -1613,7 +1602,8 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
  *             start = i + 1
  * 
  *     if s[i].isalnum() and (i - start) + 1 >= 3:             # <<<<<<<<<<<<<<
- *         terms.append(s[start:i+1])
+ *         terms.add(s[start:i+1])
+ * 
  */
   __pyx_t_7 = __Pyx_GetItemInt(__pyx_v_s, __pyx_v_i, unsigned int, 0, __Pyx_PyInt_From_unsigned_int, 0, 0, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
@@ -1650,10 +1640,11 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
     /* "mini_project2/phase1/extractTermsFrom.pyx":39
  * 
  *     if s[i].isalnum() and (i - start) + 1 >= 3:
- *         terms.append(s[start:i+1])             # <<<<<<<<<<<<<<
+ *         terms.add(s[start:i+1])             # <<<<<<<<<<<<<<
+ * 
  */
     if (unlikely(__pyx_v_terms == Py_None)) {
-      PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
+      PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "add");
       __PYX_ERR(0, 39, __pyx_L1_error)
     }
     if (unlikely(__pyx_v_s == Py_None)) {
@@ -1662,21 +1653,22 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
     }
     __pyx_t_5 = PySequence_GetSlice(__pyx_v_s, __pyx_v_start, (__pyx_v_i + 1)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 39, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_terms, __pyx_t_5); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 39, __pyx_L1_error)
+    __pyx_t_9 = PySet_Add(__pyx_v_terms, __pyx_t_5); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 39, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
     /* "mini_project2/phase1/extractTermsFrom.pyx":38
  *             start = i + 1
  * 
  *     if s[i].isalnum() and (i - start) + 1 >= 3:             # <<<<<<<<<<<<<<
- *         terms.append(s[start:i+1])
+ *         terms.add(s[start:i+1])
+ * 
  */
   }
 
   /* "mini_project2/phase1/extractTermsFrom.pyx":21
  * 
  * 
- * cdef void filterTerms(list terms, str s):             # <<<<<<<<<<<<<<
+ * cdef void filterTerms(set terms, str s):             # <<<<<<<<<<<<<<
  *     '''
  *     Filters out alphanumeric terms that are at least 3 chars long from the given string and
  */
@@ -1743,7 +1735,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_Tags, __pyx_k_Tags, sizeof(__pyx_k_Tags), 0, 0, 1, 1},
   {&__pyx_n_s_Title, __pyx_k_Title, sizeof(__pyx_k_Title), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
+  {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_isalnum, __pyx_k_isalnum, sizeof(__pyx_k_isalnum), 0, 0, 1, 1},
+  {&__pyx_n_s_json, __pyx_k_json, sizeof(__pyx_k_json), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
@@ -2038,9 +2032,21 @@ if (!__Pyx_RefNanny) {
   #endif
 
   /* "mini_project2/phase1/extractTermsFrom.pyx":1
- * from libcpp.set cimport set             # <<<<<<<<<<<<<<
+ * import json             # <<<<<<<<<<<<<<
  * 
- * cpdef list extractTermsFrom(dict postDoc):
+ * cpdef set extractTermsFrom(dict postDoc):
+ */
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_json, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_json, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "mini_project2/phase1/extractTermsFrom.pyx":21
+ * 
+ * 
+ * cdef void filterTerms(set terms, str s):             # <<<<<<<<<<<<<<
+ *     '''
+ *     Filters out alphanumeric terms that are at least 3 chars long from the given string and
  */
   __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -2557,6 +2563,71 @@ static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
     if (nogil)
         PyGILState_Release(state);
 #endif
+}
+
+/* Import */
+static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level) {
+    PyObject *empty_list = 0;
+    PyObject *module = 0;
+    PyObject *global_dict = 0;
+    PyObject *empty_dict = 0;
+    PyObject *list;
+    #if PY_MAJOR_VERSION < 3
+    PyObject *py_import;
+    py_import = __Pyx_PyObject_GetAttrStr(__pyx_b, __pyx_n_s_import);
+    if (!py_import)
+        goto bad;
+    #endif
+    if (from_list)
+        list = from_list;
+    else {
+        empty_list = PyList_New(0);
+        if (!empty_list)
+            goto bad;
+        list = empty_list;
+    }
+    global_dict = PyModule_GetDict(__pyx_m);
+    if (!global_dict)
+        goto bad;
+    empty_dict = PyDict_New();
+    if (!empty_dict)
+        goto bad;
+    {
+        #if PY_MAJOR_VERSION >= 3
+        if (level == -1) {
+            if ((1) && (strchr(__Pyx_MODULE_NAME, '.'))) {
+                module = PyImport_ImportModuleLevelObject(
+                    name, global_dict, empty_dict, list, 1);
+                if (!module) {
+                    if (!PyErr_ExceptionMatches(PyExc_ImportError))
+                        goto bad;
+                    PyErr_Clear();
+                }
+            }
+            level = 0;
+        }
+        #endif
+        if (!module) {
+            #if PY_MAJOR_VERSION < 3
+            PyObject *py_level = PyInt_FromLong(level);
+            if (!py_level)
+                goto bad;
+            module = PyObject_CallFunctionObjArgs(py_import,
+                name, global_dict, empty_dict, list, py_level, (PyObject *)NULL);
+            Py_DECREF(py_level);
+            #else
+            module = PyImport_ImportModuleLevelObject(
+                name, global_dict, empty_dict, list, level);
+            #endif
+        }
+    }
+bad:
+    #if PY_MAJOR_VERSION < 3
+    Py_XDECREF(py_import);
+    #endif
+    Py_XDECREF(empty_list);
+    Py_XDECREF(empty_dict);
+    return module;
 }
 
 /* PyDictVersioning */

@@ -28,7 +28,7 @@ def main() -> int:
         tags = db['tags']
         votes = db['votes']
 
-        # TODO reduce insertion time. current : 130 sec
+        # TODO reduce insertion time. current : 120 sec
         print("\nSearching and loading three json files...")
         st = time.time()
         postDocs, tagDocs, voteDocs = loadAllDocumentsFrom('Posts.json', 'Tags.json', 'Votes.json')
@@ -38,7 +38,7 @@ def main() -> int:
         print("Extracting terms from posts documents...")
         st = time.time()
         for postDoc in postDocs:
-            postDoc['terms'] = extractTermsFrom(postDoc)
+            postDoc['terms'] = list(extractTermsFrom(postDoc))
         print(green("Done!"))
         print("Extracting terms took {:.5f} seconds.\n".format(time.time() - st))
 

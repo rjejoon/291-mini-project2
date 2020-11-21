@@ -1,10 +1,11 @@
+import json
 
-cpdef list extractTermsFrom(dict postDoc):
+cpdef set extractTermsFrom(dict postDoc):
     '''
     Extracts unique terms from the title and body if those fields exist in the given post document, 
     and returns them in a list.
     '''
-    terms = set()
+    cdef set terms = set()
     if 'Title' in postDoc:
         filterTerms(terms, postDoc['Title'])
         
@@ -14,7 +15,7 @@ cpdef list extractTermsFrom(dict postDoc):
     if 'Tags' in postDoc:
         filterTerms(terms, postDoc['Tags'])
 
-    return list(terms)
+    return terms
 
 
 cdef void filterTerms(set terms, str s):
@@ -36,3 +37,4 @@ cdef void filterTerms(set terms, str s):
 
     if s[i].isalnum() and (i - start) + 1 >= 3:
         terms.add(s[start:i+1])
+
