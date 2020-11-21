@@ -28,7 +28,7 @@ def main() -> int:
         tags = db['tags']
         votes = db['votes']
 
-        # TODO reduce insertion time. current : 160 sec
+        # TODO reduce insertion time. current : 130 sec
         print("\nSearching and loading three json files...")
         st = time.time()
         postDocs, tagDocs, voteDocs = loadAllDocumentsFrom('Posts.json', 'Tags.json', 'Votes.json')
