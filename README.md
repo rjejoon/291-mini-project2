@@ -34,6 +34,12 @@ Unpack the zipped tarball for the data to be used in Phase 1:
 $ tar -zxvf example-data.tgz
 ```
 
+Build a Cython file:
+
+```sh
+$ python3 setup.py build_ext --inplace
+```
+
 Start phase 1 to insert examples data to MongoDB:
 ```sh
 $ python3 mini-project2 phase1
