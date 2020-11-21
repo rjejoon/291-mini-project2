@@ -12,11 +12,12 @@ class TestExtractTermsFrom(unittest.TestCase):
             docList = json.load(f)['row']
 
         test_doc1 = docList[0]
-        result = ['abc', 'def', 'ghi', 'jklmn', 'what', 'the', 'hardware', 'and', 'software', 'hardware', 'mac']
-        self.assertListEqual(extractTermsFrom(test_doc1), result)
+        result = ['abc', 'def', 'ghi', 'jklmn', 'What', 'the', 'and', 'software', 'hardware', 'mac']
+        print(extractTermsFrom(test_doc1))
+        self.assertListEqual(sorted(extractTermsFrom(test_doc1)), sorted(result))
 
         # extracting terms from url link
         test_doc2 = docList[1]
-        result = ['href', 'http', 'www', 'lobotomo', 'com', 'products', 'ipsecuritas', 'ipsecuritas']
-        self.assertListEqual(extractTermsFrom(test_doc2), result)
+        result = ['href', 'http', 'www', 'lobotomo', 'com', 'products', 'IPSecuritas']
+        self.assertListEqual(sorted(extractTermsFrom(test_doc2)), sorted(result))
 
