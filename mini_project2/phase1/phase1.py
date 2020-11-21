@@ -44,9 +44,9 @@ def main() -> int:
 
         print("Inserting documents to collections...")
         st = time.time()
-        posts.insert_many(postDocs)
-        tags.insert_many(tagDocs)
-        votes.insert_many(voteDocs)
+        posts.insert_many(postDocs, ordered=False)
+        votes.insert_many(voteDocs, ordered=False)
+        tags.insert_many(tagDocs, ordered=False)
         print(green("Done!"))
         print("Insertion took {:.5f} seconds.\n".format(time.time() - st))
 
