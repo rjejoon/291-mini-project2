@@ -8,6 +8,7 @@ pytest = "*"
 
 [packages]
 pymongo = "*"
+cython = "*"
 
 [requires]
 python_version = "3.5"
