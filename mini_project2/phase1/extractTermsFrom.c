@@ -1161,7 +1161,7 @@ static PyObject *__pyx_pf_13mini_project2_6phase1_16extractTermsFrom_extractTerm
 
 /* "mini_project2/phase1/extractTermsFrom.pyx":2
  * 
- * cpdef set extractTermsFrom(dict postDoc):             # <<<<<<<<<<<<<<
+ * cpdef list extractTermsFrom(dict postDoc):             # <<<<<<<<<<<<<<
  *     '''
  *     Extracts unique terms from the title and body if those fields exist in the given post document,
  */
@@ -1293,7 +1293,7 @@ static PyObject *__pyx_f_13mini_project2_6phase1_16extractTermsFrom_extractTerms
  *     if 'Tags' in postDoc:
  *         filterTerms(terms, postDoc['Tags'])             # <<<<<<<<<<<<<<
  * 
- *     return terms
+ *     return list(terms)
  */
     if (unlikely(__pyx_v_postDoc == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
@@ -1317,18 +1317,20 @@ static PyObject *__pyx_f_13mini_project2_6phase1_16extractTermsFrom_extractTerms
   /* "mini_project2/phase1/extractTermsFrom.pyx":17
  *         filterTerms(terms, postDoc['Tags'])
  * 
- *     return terms             # <<<<<<<<<<<<<<
+ *     return list(terms)             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_terms);
-  __pyx_r = __pyx_v_terms;
+  __pyx_t_1 = PySequence_List(__pyx_v_terms); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
   goto __pyx_L0;
 
   /* "mini_project2/phase1/extractTermsFrom.pyx":2
  * 
- * cpdef set extractTermsFrom(dict postDoc):             # <<<<<<<<<<<<<<
+ * cpdef list extractTermsFrom(dict postDoc):             # <<<<<<<<<<<<<<
  *     '''
  *     Extracts unique terms from the title and body if those fields exist in the given post document,
  */
@@ -2001,7 +2003,7 @@ if (!__Pyx_RefNanny) {
 
   /* "mini_project2/phase1/extractTermsFrom.pyx":2
  * 
- * cpdef set extractTermsFrom(dict postDoc):             # <<<<<<<<<<<<<<
+ * cpdef list extractTermsFrom(dict postDoc):             # <<<<<<<<<<<<<<
  *     '''
  *     Extracts unique terms from the title and body if those fields exist in the given post document,
  */
