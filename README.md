@@ -31,7 +31,7 @@ $ pipenv shell
 Unpack the zipped tarball for the data to be used in Phase 1:
 
 ```sh
-$ tar -zxvf example-data.tgz -C mini-project2/phase1/data
+$ tar -zxvf example-data.tgz
 ```
 
 Start phase 1 to insert examples data to MongoDB:
