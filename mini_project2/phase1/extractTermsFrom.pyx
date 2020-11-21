@@ -1,4 +1,3 @@
-import json
 
 cpdef set extractTermsFrom(dict postDoc):
     '''
