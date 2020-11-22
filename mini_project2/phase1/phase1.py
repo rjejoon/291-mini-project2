@@ -5,6 +5,7 @@ import traceback
 
 from pymongo import MongoClient
 from pymongo.collation import Collation
+from pymongo.write_concern import WriteConcern as wc
 
 from phase1.extractTermsFrom import extractTermsFrom
 from bcolor.bcolor import green, warning
@@ -23,6 +24,8 @@ def main() -> int:
         for col in collList:
             if col in db.list_collection_names():
                 db[col].drop()
+                
+        wc(w = 0)
 
         posts = db['posts']
         tags = db['tags']
