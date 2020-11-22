@@ -4,13 +4,16 @@ import time
 import os
 import traceback
 import asyncio
+import pprint
 # import aiofiles
 from async_generator import async_generator, yield_, aclosing
 
 import motor.motor_asyncio
+from pymongo.collation import Collation
 
 from phase1.extractTermsFrom import extractTermsFrom
 from bcolor.bcolor import green, warning
+
 
 
 async def main() -> int:
@@ -49,14 +52,23 @@ async def main() -> int:
         print(green("Done!"))
         print("Loading took {:.5f} seconds.\n".format(time.time() - st))
 
-
-        await asyncio.gather(extractTerms(posts, dir_path), insert(votes, voteDocs), insert(tags, tagDocs))
-        
-        # posts.insert_many(postDocs, ordered=False)
-        # votes.insert_many(voteDocs, ordered=False)
-        # tags.insert_many(tagDocs, ordered=False)
+        st = time.time()
+        print("Extracting terms from posts documents...")
+        for postDoc in postDocs:
+            postDoc['terms'] = extractTermsFrom(postDoc)
         print(green("Done!"))
-        print("Insertion took {:.5f} seconds.\n".format(time.time() - st))
+        print("Extracting terms took {:.5f} seconds.\n".format(time.time() - st))
+
+        st = time.time()
+        await asyncio.gather(
+                insert_many_task(votes, voteDocs), 
+                insert_many_task(tags, tagDocs),
+                insert_many_task(posts, postDocs),
+            )
+        
+        print("Insertions took {:.5f} seconds.\n".format(time.time() - st))
+        print(green("Done!"))
+        print("Running 4 tasks {:.5f} seconds.\n".format(time.time() - start_time))
         return
 
         st = time.time()
@@ -84,26 +96,41 @@ async def main() -> int:
         print("Disconnecting from MongoDB...")
         client.close()
 
+# async def extractTerms(postDocs):
 
-async def extractTerms(postColl, postDocs):
+    # postDoc_queue = asyncio.Queue()
+    # postDoc_return_queue = asyncio.Queue()
+    # st = time.time()
+    # print("Extracting terms from posts documents...")
+    # for _ in range(len(postDocs)):
+        # await postDoc_queue.put(postDocs.pop())
 
-    print("Extracting terms from posts documents...")
-    st = time.time()
+    # await asyncio.gather(
+            # extractTermsTask(postDoc_queue, postDoc_return_queue),
+            # extractTermsTask(postDoc_queue, postDoc_return_queue),
+            # extractTermsTask(postDoc_queue, postDoc_return_queue),
+        # )
 
-    async for postDoc in loadPostDocs(postDocs):
-        await extractTermsFrom(postDoc)
+    # while not postDoc_return_queue.empty():
+        # postDocs.append(await postDoc_return_queue.get())
 
-            # await postColl.insert_one(postDoc)
-
-    print(green("Done!"))
-    print("Extracting terms took {:.5f} seconds.\n".format(time.time() - st))
+    # print(green("Done!"))
+    # print("Extracting terms took {:.5f} seconds.\n".format(time.time() - st))
 
 
-@async_generator
-async def loadPostDocs(postDocs):
+# async def extractTermsTask(postDoc_queue, postDoc_return_queue):
 
-    async for postDoc in postDocs:
-        await _yield(postDoc)
+    # while not postDoc_queue.empty():
+        # postDoc = await postDoc_queue.get()
+        # postDoc['terms'] = await extractTermsFrom(postDoc)
+        # await postDoc_return_queue.put(postDoc)
+
+
+# @async_generator
+# async def loadPostDocs(postDocs):
+
+    # async for postDoc in postDocs:
+        # await _yield(postDoc)
      
     # f_path = os.path.join(dir_path, 'Posts.json')
     # async with aiofiles.open(f_path, mode='r') as f:
@@ -112,13 +139,11 @@ async def loadPostDocs(postDocs):
 
 
 
-async def insert(coll, documents):
+async def insert_many_task(coll, documents):
 
     print("Inserting documents to {}...".format(coll.name))
-    st = time.time()
     await coll.insert_many(documents)
-    print(green("Done!"))
-    print("Inserting {} took {:.5f} seconds.\n".format(coll.name, time.time() - st))
+    print(green("Finished inserting {}!".format(coll.name)))
 
 
 def getPort() -> int:
