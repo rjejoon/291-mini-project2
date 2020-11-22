@@ -5,7 +5,11 @@ from bcolor.bcolor import cyan
 
 
 def displayReport(db, uid: str) -> bool:
+    '''
+    Displays a report of the user if not signed in as anonymous.
 
+
+    '''
     if uid == '':
         # no report is displayed
         return False
