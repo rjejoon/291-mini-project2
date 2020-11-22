@@ -67,22 +67,18 @@ def findMatch(posts, kwList):
     Return:
         resultList -- list
     '''
+    st = time.time()
+
     cursor = posts.find(
              {"$and": [{"terms": {"$in": kwList}},
                                 {"PostTypeId":"1"}]}
              ).collation({"locale": "en", "strength":2})    # collation strength :2 --> case-insensitive
 
-    st = time.time()
     resultList = list(cursor)
-    # TODO matches
-    for kw in kwList:
-        for doc in resultList:
-            doc['match'] = doc['terms'].count(kw)
 
-    resultList.sort(key=lambda doc:doc['match'], reverse=True)
+    # TODO partial search if we have time 
+    # cursor = posts.find({ "terms": { "$regex": "/{}/i".format(kw) } })
     print(len(resultList))
-
-    # TODO when a keyword is < 3, search title and body instead of terms
 
     print("Searching took {:5} seconds.".format(time.time() - st))
 
@@ -171,7 +167,6 @@ def printSearchResult(resultList, currRowIndex, limit=5):
         crdate = currRow['CreationDate']
         score = currRow['Score']
         anscnt = currRow['AnswerCount']
-        match = currRow['match']
         row = ' '
         row += '{:^5} | '.format(str(i+1))
         if len(title) > 37:
@@ -182,8 +177,6 @@ def printSearchResult(resultList, currRowIndex, limit=5):
             score = '0'
         row += '{:^8} | '.format(score)
         row += '{:^15}'.format(anscnt)
-        #TODO delete
-        row += '{:^5}'.format(match)
         print(row)
         print('-'*len(colName))
 

@@ -22,11 +22,11 @@ def displayReport(db, uid: str) -> bool:
     # TODO What to print if the info is None?
     print(bold("   Questions"))
     for doc in qInfo:
-        print("      Owned: {} avg score: {}".format(doc['count'], doc['avgScore']))
+        print("      Owned: {} avg score: {}".format(doc['count'], round(doc['avgScore'], 2)))
 
     print(bold("   Answers"))
     for doc in aInfo:
-        print("      Owned: {}, avg score: {}".format(doc['count'], doc['avgScore']))
+        print("      Owned: {}, avg score: {}".format(doc['count'], round(doc['avgScore'], 2)))
 
     print(bold("   Votes"))
     for doc in vInfo:
