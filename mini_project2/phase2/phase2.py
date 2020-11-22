@@ -38,10 +38,10 @@ def main() -> int:
 
                 if action == 'pa':
 
-                    postAns(db['posts'], uid, targetQ['_id'])
+                    postAns(db['posts'], uid, targetQ['Id'])
 
                 elif action == 'vp' or (action == 'la' and listAnswers(db['posts'], targetQ)):
-                    votePost(db['votes'], uid, targetQ['_id'])
+                    votePost(db['votes'], uid, targetQ['Id'])
 
                 elif action == 'bm':
                     os.system('clear')

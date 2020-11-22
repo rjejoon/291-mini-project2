@@ -29,7 +29,7 @@ def listAnswers(posts, targetQ: dict) -> bool:
     
     aDocs = posts.find({"$and": [{ "PostTypeId": "2" },
                                  { "Id": { "$ne": aaId } },
-                                 { "ParentId": { "$eq": targetQ["_id"] }}]})
+                                 { "ParentId": { "$eq": targetQ["Id"] }}]})
 
     os.system('clear')
     ansDocs = []

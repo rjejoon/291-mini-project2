@@ -60,6 +60,8 @@ def findMatch(posts, kwList):
     resultList.sort(key=lambda doc:doc['match'], reverse=True)
     print(len(resultList))
 
+    # TODO when a keyword is < 3, search title and body instead of terms
+
     print("Searching took {:5} seconds.".format(time.time() - st))
 
     return resultList
