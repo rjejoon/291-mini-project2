@@ -9,6 +9,11 @@ def votePost(votes, uid, targetPid):
 	Prompts the user to post on the selected post
 	The user is allowed to vote on the same post only once
 	Inserts the vote info into votes collection with a unique vid
+
+	Inputs:
+		votes -- pymongo.collection.Collection
+		uid -- str
+		targetPid 
 	'''
 	print(bcolor.pink('\n< Vote on a Post >'))
 	
@@ -24,7 +29,7 @@ def votePost(votes, uid, targetPid):
 		if uin == 'y':
 			
 			vid = genID(votes)
-			crdate = str(datetime.now())
+			crdate = str(datetime.now()).replace(' ', 'T')[:-3]
 			
 			vote = {
 				"Id"          : vid,
