@@ -1,10 +1,13 @@
+import asyncio
 
-cpdef list extractTermsFrom(dict postDoc):
+
+async def extractTermsFrom(dict postDoc):
     '''
     Extracts unique terms from the title and body if those fields exist in the given post document, 
     and returns them in a list.
     '''
     cdef set terms = set()
+
     if 'Title' in postDoc:
         filterTerms(terms, postDoc['Title'])
         
@@ -17,7 +20,7 @@ cpdef list extractTermsFrom(dict postDoc):
     return list(terms)
 
 
-cdef void filterTerms(set terms, str s):
+def filterTerms(set terms, str s):
     '''
     Filters out alphanumeric terms that are at least 3 chars long from the given string and
     returns only the unique ones.
