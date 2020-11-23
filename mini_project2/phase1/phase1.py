@@ -4,6 +4,8 @@ import os
 import traceback
 import asyncio
 import pprint
+import multiprocessing
+import subprocess
 
 import motor.motor_asyncio
 from pymongo.collation import Collation
@@ -20,11 +22,11 @@ async def main() -> int:
         port = getPort()
         client = motor.motor_asyncio.AsyncIOMotorClient(port=port)
         db = client['291db']
-        collList = ['posts', 'votes', 'tags']
         names = await db.list_collection_names()
-        for col in collList:
+        for col in ['posts', 'votes', 'tags']:
             if col in names: 
                 await db[col].drop()
+        cpu_count = multiprocessing.cpu_count()
 
         # drop collections if already exist in db
         collList = ['posts', 'tags', 'votes']
