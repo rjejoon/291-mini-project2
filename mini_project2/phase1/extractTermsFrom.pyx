@@ -1,5 +1,3 @@
-
-
 cpdef list extractTermsFrom(dict postDoc):
     '''
     Extracts unique terms from the title and body if those fields exist in the given post document, 

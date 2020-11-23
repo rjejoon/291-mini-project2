@@ -11,9 +11,6 @@ pymongo = "*"
 cython = "*"
 tornado = "*"
 motor = "*"
-async-generator = "*"
-ijson = "*"
-aiofiles = "*"
 
 [requires]
 python_version = "3.5"
