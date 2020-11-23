@@ -87,7 +87,7 @@ def findMatch(posts, kwList):
 
 def displaySearchResult(resultList, posts):
     '''
-    Displays the matching posts from the highest number of matches to the lowest
+    Displays the matching posts 
     Displays 5 posts at once and prompts the user to view more posts and to select a post
     After selecting a post, prompts the user to choose which action to perform next
 

@@ -6,7 +6,7 @@ from phase2.postQA import genID
 
 def votePost(votes, uid, targetPid):
 	'''
-	Prompts the user to post on the selected post
+	Prompts the user to vote on the selected post
 	The user is allowed to vote on the same post only once
 	Inserts the vote info into votes collection with a unique vid
 

@@ -7,8 +7,16 @@ from bcolor.bcolor import cyan
 def displayReport(db, uid: str) -> bool:
     '''
     Displays a report of the user if not signed in as anonymous.
-
-
+    The user report includes:
+        the # of questions owned and the average score for those questions, 
+        the # of answers owned and the average score for those answers, and 
+        the # of votes registered for the user
+    
+    Inputs:
+        db -- pymongo.database.Database
+        uid -- str
+    Returns:
+        bool
     '''
     if uid == '':
         # no report is displayed
@@ -40,7 +48,16 @@ def displayReport(db, uid: str) -> bool:
 
 
 def getQInfo(posts, uid):
+    '''
+    Gets the # of questions the user owned and the average score for those questions 
 
+    Inputs:
+        posts -- pymongo.collection.Collection
+        uid -- str
+    Return:
+        pymongo.command_cursor.CommandCursor
+    '''
+    
     return posts.aggregate([
                 {"$match": {"$and": [{"OwnerUserId": uid}, 
                                      {"PostTypeId": "1"}]}},
@@ -51,6 +68,15 @@ def getQInfo(posts, uid):
 
 
 def getAInfo(posts, uid):
+    '''
+    Gets the # of answers the user owned and the average score for those answers
+
+    Inputs:
+        posts -- pymongo.collection.Collection
+        uid -- str
+    Return:
+        pymongo.command_cursor.CommandCursor
+    '''
 
     return posts.aggregate([
                 {"$match": {"$and": [{"OwnerUserId": uid}, 
@@ -65,6 +91,15 @@ def getAInfo(posts, uid):
                 ])
 
 def getVInfo(posts, uid):
+    '''
+    Gets the # of votes registered for the user
+
+    Inputs:
+        posts -- pymongo.collection.Collection
+        uid -- str
+    Return:
+        pymongo.command_cursor.CommandCursor
+    '''
 
     return posts.aggregate([
                 {"$match": {"OwnerUserId": uid}}, 
