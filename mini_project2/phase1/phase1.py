@@ -71,15 +71,15 @@ async def insert_many_task(coll, documents):
     Asynchronous task that inserts all documents to the collection.
     '''
     print("Inserting documents to {}...".format(coll.name))
-    await coll.insert_many(documents)
+    await coll.insert_many(documents, ordered=False)
     documents.clear()
+    print(green("Finished inserting {}!".format(coll.name)))
     if coll.name == 'posts':
         print("Creating index using terms...")
         await coll.create_index([('terms', 1)],
                                  collation=Collation(locale='en',
                                                      strength=2))    # for case=insensitive
         print(green("Finished creating the index!"))
-    print(green("Finished inserting {}!".format(coll.name)))
 
 
 def getPort() -> int:
