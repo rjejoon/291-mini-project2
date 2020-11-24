@@ -47,8 +47,7 @@ def postQ(db, uid) -> bool:
 
             # add Tags if the user enters at least one tag
             if tagSet:
-                tagStr = '<' + '><'.join(tagSet) + '>'
-                post["Tags"] = tagStr
+                post['Tags'] = '<' + '><'.join(tagSet) + '>'
                 insertTags(tagsColl, tagSet)
                 
             postsColl.insert_one(post)
@@ -130,7 +129,7 @@ def genID(collName) -> str:
     cursor = collName.aggregate([
         {"$group": {"_id": None, "maxId": {"$max": {"$toInt": "$Id"}}}}
     ])
-    maxId = 0
+    maxId = 1
     for doc in cursor:
         maxId = doc['maxId']
     
@@ -163,6 +162,7 @@ def createQDict(pid, crdate, body, title, uid):
                 "Id": pid,
                 "PostTypeId": "1",
                 "CreationDate": crdate,
+                "LastActivityDate": crdate,
                 "OwnerUserId": uid,
                 "Score": 0,
                 "ViewCount": 0,
@@ -185,6 +185,7 @@ def createAnsDict(pid, targetPid, crdate, body, uid):
                 "OwnerUserId": uid,
                 "ParentId": targetPid,
                 "CreationDate": crdate,
+                "LastActivityDate": crdate,
                 "Body": body,
                 "Score": 0,
                 "CommentCount": 0,

@@ -1,25 +1,25 @@
 import os
+
 from pymongo import MongoClient
 
-from bcolor.bcolor import bold 
-from bcolor.bcolor import cyan
-from bcolor.bcolor import warning 
+from bcolor.bcolor import bold, cyan, warning
 from phase2.getValidInput import getValidInput
+
+from phase2 import phase2
 
 
 def listAnswers(posts, targetQ: dict) -> bool:
     '''
-    Displays all the answer corresponds to the target question post.
+    Displays all the answers that correspond to the target question post.
     An accepted answer is marked with a star.
-    By selecting an answer post, a user can see all the fields in the document.
+    By selecting an answer post, the user can see all its fields.
 
     Inputs:
-        posts -- pymongo.collection.Collection
+        posts -- Collection
         targetQ -- dict
     Return:
         bool
     '''
-
     # "aa": accepted answer
     aaDoc = None
     aaId = None
@@ -29,9 +29,9 @@ def listAnswers(posts, targetQ: dict) -> bool:
     
     aDocs = posts.find({"$and": [{ "PostTypeId": "2" },
                                  { "Id": { "$ne": aaId } },
-                                 { "ParentId": { "$eq": targetQ["Id"] }}]})
+                                 { "ParentId": targetQ["Id"] }]})
 
-    os.system('clear')
+    phase2.clear()
     ansDocs = []
 
     i = 0
@@ -59,7 +59,7 @@ def listAnswers(posts, targetQ: dict) -> bool:
 
     printAnswerDocumentFull(selectedAnsDoc)
 
-    return promptAnswerAction()
+    return True 
 
 
 def printAnswerDocumentFull(doc):
@@ -71,39 +71,52 @@ def printAnswerDocumentFull(doc):
         i -- int
         isAA -- bool
     '''
-    os.system('clear')
-    del doc['_id']
-    fieldNames = list(doc.keys())
-    
+    phase2.clear()
+    fieldNames = [
+                    '_id',
+                    'Id',
+                    'PostTypeId',
+                    'ParentId',
+                    'CreationDate',
+                    'Score',
+                    'OwnerUserId',
+                    'LastActivityDate',
+                    'CommentCount',
+                    'ContentLicense',
+                    'Body',
+                    'terms'
+                ]
+
+    # ensure all the fields are included
+    for f in doc:
+        if f not in fieldNames:
+            fieldNames.append(f)
+
     print(cyan('< Post Info>\n'))
-    # TODO dict is not ordered
     for f in fieldNames:
         fieldElem = doc[f]
-        if f =='CreationDate':
+        if f in ('CreationDate', 'LastActivityDate'):
             fieldElem = "{} {} UTC".format(fieldElem[:10], fieldElem[11:])
         elif f == 'Body':
             fieldElem = '\n\n' + fieldElem
 
-        print("{}: {}".format(bold(f), fieldElem), end='\n')
+        print("{}: {}".format(bold(f), fieldElem))
 
 
-
-def printAnswerDocumentSimple(doc, i, isAA=False):
+def printAnswerDocumentSimple(doc: dict, i: int, isAA=False):
     '''
     Displays a simple version of the answer document.
-
-    Inputs:
-        doc -- dict
-        i -- int
-        isAA -- bool
+    Fields to be displayed:
+        1. first 80 chars of body,
+        2. Creation date,
+        3. Score
     '''
-
     score = doc['Score']
     crDate = doc['CreationDate']
     crDate = "{} {} UTC".format(crDate[:10], crDate[11:])
 
-    lim = 80
-    body = doc['Body'][:lim]
+    LENLIM = 80
+    body = doc['Body'][:LENLIM]
 
     header = "Answer {}".format(i+1).center(80, '-')
     if isAA:
@@ -116,18 +129,3 @@ def printAnswerDocumentSimple(doc, i, isAA=False):
     print("{}: {}".format(bold("Creation Date"), crDate))
     print("{}: {}".format(bold("Score"), score))
     print()
-
-
-def promptAnswerAction() -> bool:
-    '''
-    Return True if the user wishes to perform an answer action.
-    Since there is only one answer action, boolean is returned.
-    '''
-
-    i = getValidInput(warning("Would you like to vote on this answer? [y/n] "), ['y', 'n'])
-
-    if i == 'y':
-        return True
-    return False
-
-

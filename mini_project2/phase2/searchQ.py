@@ -1,16 +1,17 @@
-from pymongo import MongoClient
+import time
 from collections import OrderedDict
+
+from pymongo import MongoClient
+
+from phase2 import phase2
 from phase2.getValidInput import getValidInput
 from bcolor.bcolor import pink, errmsg, cyan, bold
-import os
-import pprint
-import time
 
 
 def searchQ(db):
     '''
-    Searches for question posts using the keywords the user has entered
-    Prompts the user to perform various action after selecting a post
+    Searches for question posts with the given keywords.
+    Prompts the user to perform various actions after selecting a post.
 
     Input:
         db -- pymongo.database.Database
@@ -18,7 +19,7 @@ def searchQ(db):
         targetPost -- list
         action -- str
     '''
-    os.system('clear')
+    phase2.clear()
     print(pink('< Search for Questions >'))
 
     posts = db["posts"]
@@ -35,7 +36,7 @@ def searchQ(db):
     return targetPost, action
 
 
-def getKeywords():
+def getKeywords() -> list:
     '''
     Prompts the user to enter some keywords to search for question posts
     Returns a list of keywords
@@ -43,23 +44,19 @@ def getKeywords():
     prompt = "Enter keywords to search, each separated by a comma: "
     valid = False 
     while not valid:
-        keywords = input(prompt).lower().split(',')
-        kwList = []
-        for keyword in keywords:
-            keyword = keyword.strip()
-            if keyword and keyword not in kwList:
-                kwList.append(keyword)
-        if len(kwList) > 0:
+        keywords = input(prompt).strip().lower().split(',')
+        kwSet = {kw.strip() for kw in keywords if len(kw) > 0}
+        if len(kwSet) > 0:
             valid = True
         else:
             print(errmsg("error: keywords cannot be empty."))
 
-    return kwList
+    return list(kwSet) 
 
 
-def findMatch(posts, kwList):
+def findMatch(posts, kwList) -> list:
     '''
-    Searches for the matching post using kwList and returns resultList
+    Finds all posts with any matching words in kwList and returns them.
 
     Inputs:
         posts -- pymongo.collection.Collection
@@ -78,7 +75,6 @@ def findMatch(posts, kwList):
 
     # TODO partial search if we have time 
     # cursor = posts.find({ "terms": { "$regex": "/{}/i".format(kw) } })
-    print(len(resultList))
 
     print("Searching took {:5} seconds.".format(time.time() - st))
 
@@ -201,6 +197,7 @@ def displaySelectedPost(resultList, posts, no):
     targetDoc = posts.find_one({"Id": resultList[no]["Id"]})
 
     fieldNames = [
+                    '_id',
                     'Id',
                     'PostTypeId', 
                     'AcceptedAnswerId',
@@ -217,10 +214,17 @@ def displaySelectedPost(resultList, posts, no):
                     'LastEditorUserId', 
                     'LastEditDate', 
                     'Last Activity Date', 
-                    'ContentLicense'
+                    'ContentLicense',
+                    'terms',
                 ]
 
-    print(cyan('\nSelected Post Information:'))
+    # ensure all the fields are included
+    for f in targetDoc:
+        if f not in fieldNames:
+            fieldNames.append(f)
+
+    phase2.clear()
+    print(cyan('Selected Post Information:\n'))
     for field in fieldNames:
         if field in targetDoc:
             print('{0}: {1}'.format(bold(field), targetDoc[field]))
