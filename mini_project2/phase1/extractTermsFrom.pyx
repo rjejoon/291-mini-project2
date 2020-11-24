@@ -1,10 +1,10 @@
-
 cpdef list extractTermsFrom(dict postDoc):
     '''
     Extracts unique terms from the title and body if those fields exist in the given post document, 
     and returns them in a list.
     '''
     cdef set terms = set()
+
     if 'Title' in postDoc:
         filterTerms(terms, postDoc['Title'])
         

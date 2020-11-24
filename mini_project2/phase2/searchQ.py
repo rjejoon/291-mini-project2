@@ -134,7 +134,9 @@ def displaySearchResult(resultList, posts):
         # post is selected
         if opt.isdigit():
             no = int(opt) - 1      # to match zero-index array
-            displaySelectedPost(resultList, posts, no)
+            uin = getValidInput('Do you want to see the detailed information on this post? [y/n] ', ['y','n'])
+            if uin == 'y':
+                displaySelectedPost(resultList, posts, no)
             action = getAction()
             choseAction = True
 
@@ -224,7 +226,6 @@ def displaySelectedPost(resultList, posts, no):
     for field in fieldNames:
         if field in targetDoc:
             print('{0}: {1}'.format(bold(field), targetDoc[field]))
-    print()
 
     
 def getAction():
@@ -235,7 +236,7 @@ def getAction():
     '''
     actionDict = availableActions()
 
-    print("Choose an option to:\n")
+    print("\nChoose an option to:\n")
     for cmd, action in actionDict.items():
         print("   {0}: {1}".format(bold(cmd), action))
 

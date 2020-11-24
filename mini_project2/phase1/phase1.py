@@ -2,27 +2,32 @@ import json
 import time
 import os
 import traceback
+import asyncio
+import pprint
 
-from pymongo import MongoClient
+import motor.motor_asyncio
 from pymongo.collation import Collation
 
 from phase1.extractTermsFrom import extractTermsFrom
+from phase1.serializeDocumentsFrom import serializeDocumentsFrom
 from bcolor.bcolor import green, warning
 
 
-def main() -> int:
+async def main() -> int:
 
     try:
         start_time = time.time()
         port = getPort()
-        client = MongoClient(port=port)
+        client = motor.motor_asyncio.AsyncIOMotorClient(port=port)
         db = client['291db']
+        collList = ['posts', 'votes', 'tags']
+        names = await db.list_collection_names()
+        for col in collList:
+            if col in names: 
+                await db[col].drop()
 
         # drop collections if already exist in db
         collList = ['posts', 'tags', 'votes']
-        for col in collList:
-            if col in db.list_collection_names():
-                db[col].drop()
 
         posts = db['posts']
         tags = db['tags']
@@ -31,40 +36,32 @@ def main() -> int:
         # TODO reduce insertion time. current : 120 sec
         print("\nSearching and loading three json files...")
         st = time.time()
-        postDocs, tagDocs, voteDocs = loadAllDocumentsFrom('Posts.json', 'Tags.json', 'Votes.json')
-        print(green("Done!"))
-        print("Loading took {:.5f} seconds.\n".format(time.time() - st))
 
-        print("Extracting terms from posts documents...")
-        st = time.time()
-        for postDoc in postDocs:
-            postDoc['terms'] = extractTermsFrom(postDoc)
-        print(green("Done!"))
-        print("Extracting terms took {:.5f} seconds.\n".format(time.time() - st))
+        postDocs, voteDocs, tagDocs = loadAllDocumentsFrom('Posts.json', 'Votes.json', 'Tags.json')
 
-        print("Inserting documents to collections...")
-        st = time.time()
-        posts.insert_many(postDocs, ordered=False)
-        votes.insert_many(voteDocs, ordered=False)
-        tags.insert_many(tagDocs, ordered=False)
         print(green("Done!"))
-        print("Insertion took {:.5f} seconds.\n".format(time.time() - st))
+        print("Loading and extracting took {:.5f} seconds.\n".format(time.time() - st))
 
         st = time.time()
-        print("Creating index using terms...")
-        posts.create_index([('terms', 1)],
-                            collation=Collation(locale='en',
-                                                strength=2))    # for case=insensitive
-        print(green("Done!"))
-        print("Indexing took {:.5f} seconds.\n".format(time.time() - st))
+        await asyncio.gather(
+                insert_many_task(posts, postDocs),
+                insert_many_task(votes, voteDocs), 
+                insert_many_task(tags, tagDocs),
+            )
+        
+        print("Insertions took {:.5f} seconds.\n".format(time.time() - st))
+
+        # st = time.time()
+        # print("Indexing took {:.5f} seconds.\n".format(time.time() - st))
 
         print("Phase 1 complete!")
         print("It took {:.5f} seconds.".format(time.time() - start_time))
 
         return 0
 
+
     except TypeError as e:
-        print(e)
+        print(traceback.print_exc())
         return 1
 
     except:
@@ -74,6 +71,21 @@ def main() -> int:
     finally:
         print("Disconnecting from MongoDB...")
         client.close()
+
+
+async def insert_many_task(coll, documents):
+
+    print("Inserting documents to {}...".format(coll.name))
+    await coll.insert_many(documents)
+    documents.clear()
+    if coll.name == 'posts':
+        print("Creating index using terms...")
+        await coll.create_index([('terms', 1)],
+                                 collation=Collation(locale='en',
+                                                     strength=2))    # for case=insensitive
+        print(green("Done!"))
+
+    print(green("Finished inserting {}!".format(coll.name)))
 
 
 def getPort() -> int:
@@ -106,23 +118,12 @@ def loadAllDocumentsFrom(*args) -> list:
         if jsonFilesExistIn(temp_dir, args):
             dir_path = temp_dir	
     print(warning("Found {} json files in {}".format(len(args), dir_path)))
-
-    if dir_path is None:
-        raise Exception("could not find json files")
             
     return [serializeDocumentsFrom(dir_path, f_name) for f_name in args]
 
-
-def serializeDocumentsFrom(dir_path, f_name):
-	
-    collName = f_name[:-5].lower()
-    print("Loading {}...".format(f_name))
-    with open(os.path.join(dir_path, f_name), 'r') as f:
-        return json.load(f)[collName]['row']
-    
 	
 def jsonFilesExistIn(dir_path, filenames):
-	
+        
     return all((os.path.isfile(os.path.join(dir_path, f_name)) for f_name in filenames))
 
 

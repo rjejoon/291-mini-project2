@@ -1,4 +1,6 @@
 import sys
+import asyncio
+
 from phase1 import phase1
 from phase2 import phase2
 
@@ -9,7 +11,8 @@ if __name__ == '__main__':
         
         if phase == 'phase1':
             print("Running phase 1...")
-            sys.exit(phase1.main())
+            loop = asyncio.get_event_loop()
+            sys.exit(loop.run_until_complete(phase1.main()))
         elif phase == 'phase2':
             print("Running phase 2...")
             sys.exit(phase2.main())
