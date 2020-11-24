@@ -61,7 +61,7 @@ def printInterface(uid):
     Displays a phase 2 main menu interface.
     '''
     if uid == '':
-        uid = 'anonymous'
+       uid = 'anonymous'
 
     header = "{}    User id: {}\n".format(pink('< M E N U >'), uid)
     pq = "{}ost a {}uestion".format(underline('P'), underline('Q'))
@@ -82,7 +82,13 @@ def getUid() -> str:
     The user can sign up as anonymous by inputting an empty string.
     '''
     print("Press enter without anything entered to sign in as anonymous.")
-    return input('Enter your id: ')
+    while True:
+        uid = input('Enter your id: ')
+        if uid == '':
+            return ''
+        if uid.isdigit():
+            return uid
+        print(errmsg("error: uid must be a number"))
 
 
 def clear():

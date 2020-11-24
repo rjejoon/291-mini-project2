@@ -2,7 +2,7 @@ import os
 
 from pymongo import MongoClient
 
-from bcolor.bcolor import bold, cyan, warning
+from bcolor.bcolor import bold, cyan, warning, errmsg
 from phase2.getValidInput import getValidInput
 
 from phase2 import phase2
@@ -47,7 +47,7 @@ def listAnswers(posts, targetQ: dict) -> bool:
     
     # no answer for the selected question
     if i == 0:
-        print(warning("There is no answer post to this question."))
+        print(errmsg("There is no answer post to this question."))
         return False
 
     interval = "[1]" if i == 1 else "[1-{}]".format(i) 
@@ -83,8 +83,8 @@ def printAnswerDocumentFull(doc):
                     'LastActivityDate',
                     'CommentCount',
                     'ContentLicense',
-                    'Body',
-                    'terms'
+                    'terms',
+                    'Body'
                 ]
 
     # ensure all the fields are included
@@ -94,13 +94,13 @@ def printAnswerDocumentFull(doc):
 
     print(cyan('< Post Info>\n'))
     for f in fieldNames:
-        fieldElem = doc[f]
-        if f in ('CreationDate', 'LastActivityDate'):
-            fieldElem = "{} {} UTC".format(fieldElem[:10], fieldElem[11:])
-        elif f == 'Body':
-            fieldElem = '\n\n' + fieldElem
-
-        print("{}: {}".format(bold(f), fieldElem))
+        if f in doc:
+            fieldElem = doc[f]
+            if f in ('CreationDate', 'LastActivityDate'):
+                fieldElem = "{} {} UTC".format(fieldElem[:10], fieldElem[11:])
+            elif f == 'Body':
+                fieldElem = '\n\n' + fieldElem
+            print("{}: {}".format(bold(f), fieldElem))
 
 
 def printAnswerDocumentSimple(doc: dict, i: int, isAA=False):

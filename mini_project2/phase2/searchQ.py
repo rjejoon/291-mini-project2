@@ -5,7 +5,7 @@ from pymongo import MongoClient
 
 from phase2 import phase2
 from phase2.getValidInput import getValidInput
-from bcolor.bcolor import pink, errmsg, cyan, bold
+from bcolor.bcolor import pink, errmsg, cyan, bold, warning
 
 
 def searchQ(db):
@@ -130,7 +130,7 @@ def displaySearchResult(resultList, posts):
         # post is selected
         if opt.isdigit():
             no = int(opt) - 1      # to match zero-index array
-            uin = getValidInput('Do you want to see the detailed information on this post? [y/n] ', ['y','n'])
+            uin = getValidInput(warning('Do you want to see the detailed information on this post? [y/n] '), ['y','n'])
             if uin == 'y':
                 displaySelectedPost(resultList, posts, no)
             action = getAction()
@@ -204,7 +204,6 @@ def displaySelectedPost(resultList, posts, no):
                     'PostTypeId', 
                     'AcceptedAnswerId',
                     'Title', 
-                    'Body', 
                     'Tags', 
                     'CreationDate', 
                     'OwnerUserId', 
@@ -215,9 +214,10 @@ def displaySelectedPost(resultList, posts, no):
                     'FavoriteCount', 
                     'LastEditorUserId', 
                     'LastEditDate', 
-                    'Last Activity Date', 
+                    'LastActivityDate', 
                     'ContentLicense',
                     'terms',
+                    'Body'
                 ]
 
     # ensure all the fields are included
@@ -227,10 +227,14 @@ def displaySelectedPost(resultList, posts, no):
 
     phase2.clear()
     print(cyan('Selected Post Information:\n'))
-    for field in fieldNames:
-        if field in targetDoc:
-            print('{0}: {1}'.format(bold(field), targetDoc[field]))
-
+    for f in fieldNames:
+        if f in targetDoc:
+            fieldElem = targetDoc[f]
+            if f in ('CreationDate', 'LastActivityDate'):
+                fieldElem = "{} {} UTC".format(fieldElem[:10], fieldElem[11:])
+            elif f == 'Body':
+                fieldElem = '\n\n' + fieldElem
+            print("{}: {}".format(bold(f), fieldElem))
     
 def getAction():
     '''

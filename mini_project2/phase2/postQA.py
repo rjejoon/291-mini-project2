@@ -86,7 +86,7 @@ def postAns(posts, uid, targetPid) -> bool:
         body = input("Enter your body text: ")
         crdate = str(datetime.now()).replace(' ', 'T')[:-3]
 
-        prompt = 'Do you want to post this answer to the selected post? [y/n] '
+        prompt = warning('Do you want to post this answer to the selected post? [y/n] ')
         
         if getValidInput(prompt, ['y','n']) == 'y':
 
