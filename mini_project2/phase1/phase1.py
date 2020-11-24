@@ -3,7 +3,6 @@ import time
 import os
 import traceback
 import asyncio
-import pprint
 
 import motor.motor_asyncio
 from pymongo.collation import Collation
@@ -14,51 +13,45 @@ from bcolor.bcolor import green, warning
 
 
 async def main() -> int:
-
+    '''
+    Main structure of phase 1.
+    '''
     try:
         start_time = time.time()
         port = getPort()
         client = motor.motor_asyncio.AsyncIOMotorClient(port=port)
         db = client['291db']
+
+        # drop collections if already exist in db
         collList = ['posts', 'votes', 'tags']
         names = await db.list_collection_names()
         for col in collList:
             if col in names: 
                 await db[col].drop()
 
-        # drop collections if already exist in db
-        collList = ['posts', 'tags', 'votes']
-
+        # collections
         posts = db['posts']
         tags = db['tags']
         votes = db['votes']
 
-        # TODO reduce insertion time. current : 120 sec
-        print("\nSearching and loading three json files...")
         st = time.time()
-
         postDocs, voteDocs, tagDocs = loadAllDocumentsFrom('Posts.json', 'Votes.json', 'Tags.json')
-
         print(green("Done!"))
         print("Loading and extracting took {:.5f} seconds.\n".format(time.time() - st))
 
         st = time.time()
+        # insert at the same time
         await asyncio.gather(
                 insert_many_task(posts, postDocs),
                 insert_many_task(votes, voteDocs), 
                 insert_many_task(tags, tagDocs),
             )
-        
         print("Insertions took {:.5f} seconds.\n".format(time.time() - st))
-
-        # st = time.time()
-        # print("Indexing took {:.5f} seconds.\n".format(time.time() - st))
 
         print("Phase 1 complete!")
         print("It took {:.5f} seconds.".format(time.time() - start_time))
 
         return 0
-
 
     except TypeError as e:
         print(traceback.print_exc())
@@ -74,7 +67,9 @@ async def main() -> int:
 
 
 async def insert_many_task(coll, documents):
-
+    '''
+    Asynchronous task that inserts all documents to the collection.
+    '''
     print("Inserting documents to {}...".format(coll.name))
     await coll.insert_many(documents)
     documents.clear()
@@ -83,15 +78,14 @@ async def insert_many_task(coll, documents):
         await coll.create_index([('terms', 1)],
                                  collation=Collation(locale='en',
                                                      strength=2))    # for case=insensitive
-        print(green("Done!"))
-
+        print(green("Finished creating the index!"))
     print(green("Finished inserting {}!".format(coll.name)))
 
 
 def getPort() -> int:
     '''
-    Prompts the user for MongoDB port number and returns it.
-    Raise TypeError if the user enters an invalid port number.
+    Prompts the user for MongoDB port and returns it.
+    Raise TypeError if the user enters an invalid port.
     '''
     port = input("Enter MongoDB the port number: ")
     if port == '':
@@ -104,8 +98,9 @@ def getPort() -> int:
 
 def loadAllDocumentsFrom(*args) -> list:
     '''
-    Reads json files and returns the list of MongoDB documents corresponding to each file.
+    Reads and serializes json files and returns the list of MongoDB documents corresponding to each file.
     '''
+    print("\nSearching and loading three json files...")
     desired_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data')
     dirs_to_test = [desired_dir]
     # search from the root dir to 'data' (4 levels)
@@ -122,8 +117,10 @@ def loadAllDocumentsFrom(*args) -> list:
     return [serializeDocumentsFrom(dir_path, f_name) for f_name in args]
 
 	
-def jsonFilesExistIn(dir_path, filenames):
-        
+def jsonFilesExistIn(dir_path, filenames) -> bool:
+    '''
+    Returns True if all the files in filenames exist in the dir_path.
+    '''
     return all((os.path.isfile(os.path.join(dir_path, f_name)) for f_name in filenames))
 
 

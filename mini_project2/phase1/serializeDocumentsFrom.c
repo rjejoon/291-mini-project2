@@ -1252,6 +1252,7 @@ static const char __pyx_k_r[] = "r";
 static const char __pyx_k_os[] = "os";
 static const char __pyx_k_end[] = "end";
 static const char __pyx_k_row[] = "row";
+static const char __pyx_k_Done[] = "Done!";
 static const char __pyx_k_exit[] = "__exit__";
 static const char __pyx_k_file[] = "file";
 static const char __pyx_k_join[] = "join";
@@ -1263,6 +1264,7 @@ static const char __pyx_k_open[] = "open";
 static const char __pyx_k_path[] = "path";
 static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_enter[] = "__enter__";
+static const char __pyx_k_green[] = "green";
 static const char __pyx_k_lower[] = "lower";
 static const char __pyx_k_posts[] = "posts";
 static const char __pyx_k_print[] = "print";
@@ -1272,10 +1274,15 @@ static const char __pyx_k_format[] = "format";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_Loading[] = "Loading {}...";
 static const char __pyx_k_dir_path[] = "dir_path";
+static const char __pyx_k_bcolor_bcolor[] = "bcolor.bcolor";
 static const char __pyx_k_extractTermsFrom[] = "extractTermsFrom";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_phase1_extractTermsFrom[] = "phase1.extractTermsFrom";
+static const char __pyx_k_Extracting_terms_from_posts[] = "Extracting terms from posts...";
+static PyObject *__pyx_kp_s_Done;
+static PyObject *__pyx_kp_s_Extracting_terms_from_posts;
 static PyObject *__pyx_kp_s_Loading;
+static PyObject *__pyx_n_s_bcolor_bcolor;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_dir_path;
 static PyObject *__pyx_n_s_end;
@@ -1285,6 +1292,7 @@ static PyObject *__pyx_n_s_extractTermsFrom;
 static PyObject *__pyx_n_s_f_name;
 static PyObject *__pyx_n_s_file;
 static PyObject *__pyx_n_s_format;
+static PyObject *__pyx_n_s_green;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_join;
 static PyObject *__pyx_n_s_json;
@@ -1306,12 +1314,12 @@ static PyObject *__pyx_pf_13mini_project2_6phase1_22serializeDocumentsFrom_seria
 static PyObject *__pyx_tuple_;
 /* Late includes */
 
-/* "mini_project2/phase1/serializeDocumentsFrom.pyx":7
+/* "mini_project2/phase1/serializeDocumentsFrom.pyx":9
  * 
  * 
  * cpdef list serializeDocumentsFrom(str dir_path, str f_name):             # <<<<<<<<<<<<<<
- * 
- *     cdef list docs
+ *     '''
+ *     Loads and serializes a json file. Extract terms from title, body, and tags if the data is for posts.
  */
 
 static PyObject *__pyx_pw_13mini_project2_6phase1_22serializeDocumentsFrom_1serializeDocumentsFrom(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
@@ -1340,8 +1348,8 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("serializeDocumentsFrom", 0);
 
-  /* "mini_project2/phase1/serializeDocumentsFrom.pyx":10
- * 
+  /* "mini_project2/phase1/serializeDocumentsFrom.pyx":15
+ *     '''
  *     cdef list docs
  *     collName = f_name[:-5].lower()             # <<<<<<<<<<<<<<
  *     print("Loading {}...".format(f_name))
@@ -1349,11 +1357,11 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
  */
   if (unlikely(__pyx_v_f_name == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 10, __pyx_L1_error)
+    __PYX_ERR(0, 15, __pyx_L1_error)
   }
-  __pyx_t_2 = PySequence_GetSlice(__pyx_v_f_name, 0, -5L); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_t_2 = PySequence_GetSlice(__pyx_v_f_name, 0, -5L); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_lower); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_lower); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -1368,20 +1376,20 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
   }
   __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_collName = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mini_project2/phase1/serializeDocumentsFrom.pyx":11
+  /* "mini_project2/phase1/serializeDocumentsFrom.pyx":16
  *     cdef list docs
  *     collName = f_name[:-5].lower()
  *     print("Loading {}...".format(f_name))             # <<<<<<<<<<<<<<
  *     with open(os.path.join(dir_path, f_name), 'r') as f:
  *         docs = json.load(f)[collName]['row']
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Loading, __pyx_n_s_format); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_kp_s_Loading, __pyx_n_s_format); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_2 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -1395,13 +1403,13 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
   }
   __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_2, __pyx_v_f_name) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_f_name);
   __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (__Pyx_PrintOne(0, __pyx_t_1) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_t_1) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mini_project2/phase1/serializeDocumentsFrom.pyx":12
+  /* "mini_project2/phase1/serializeDocumentsFrom.pyx":17
  *     collName = f_name[:-5].lower()
  *     print("Loading {}...".format(f_name))
  *     with open(os.path.join(dir_path, f_name), 'r') as f:             # <<<<<<<<<<<<<<
@@ -1409,12 +1417,12 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
  *         if collName == 'posts':
  */
   /*with:*/ {
-    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_os); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 12, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_os); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 17, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_path); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 12, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_path); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_join); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 12, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_join); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 17, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_2 = NULL;
@@ -1432,7 +1440,7 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[3] = {__pyx_t_2, __pyx_v_dir_path, __pyx_v_f_name};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -1440,13 +1448,13 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[3] = {__pyx_t_2, __pyx_v_dir_path, __pyx_v_f_name};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 12, __pyx_L1_error)
+      __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 17, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       if (__pyx_t_2) {
         __Pyx_GIVEREF(__pyx_t_2); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_2); __pyx_t_2 = NULL;
@@ -1457,12 +1465,12 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
       __Pyx_INCREF(__pyx_v_f_name);
       __Pyx_GIVEREF(__pyx_v_f_name);
       PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_f_name);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 12, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 17, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_GIVEREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
@@ -1470,12 +1478,12 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
     __Pyx_GIVEREF(__pyx_n_s_r);
     PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_n_s_r);
     __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_open, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_open, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_6 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_exit); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 12, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_exit); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 17, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_5 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_enter); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 12, __pyx_L3_error)
+    __pyx_t_5 = __Pyx_PyObject_LookupSpecial(__pyx_t_1, __pyx_n_s_enter); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 17, __pyx_L3_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_2 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -1489,7 +1497,7 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
     }
     __pyx_t_3 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 12, __pyx_L3_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 17, __pyx_L3_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_5 = __pyx_t_3;
@@ -1507,16 +1515,16 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
           __pyx_v_f = __pyx_t_5;
           __pyx_t_5 = 0;
 
-          /* "mini_project2/phase1/serializeDocumentsFrom.pyx":13
+          /* "mini_project2/phase1/serializeDocumentsFrom.pyx":18
  *     print("Loading {}...".format(f_name))
  *     with open(os.path.join(dir_path, f_name), 'r') as f:
  *         docs = json.load(f)[collName]['row']             # <<<<<<<<<<<<<<
  *         if collName == 'posts':
- *             for doc in docs:
+ *             print("Extracting terms from posts...")
  */
-          __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_json); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L7_error)
+          __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_json); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_1);
-          __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_load); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 13, __pyx_L7_error)
+          __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_load); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 18, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_3);
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           __pyx_t_1 = NULL;
@@ -1531,60 +1539,69 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
           }
           __pyx_t_5 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_1, __pyx_v_f) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_f);
           __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-          if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 13, __pyx_L7_error)
+          if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 18, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_t_5, __pyx_v_collName); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 13, __pyx_L7_error)
+          __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_t_5, __pyx_v_collName); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 18, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_3);
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-          __pyx_t_5 = __Pyx_PyObject_Dict_GetItem(__pyx_t_3, __pyx_n_s_row); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 13, __pyx_L7_error)
+          __pyx_t_5 = __Pyx_PyObject_Dict_GetItem(__pyx_t_3, __pyx_n_s_row); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 18, __pyx_L7_error)
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          if (!(likely(PyList_CheckExact(__pyx_t_5))||((__pyx_t_5) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_5)->tp_name), 0))) __PYX_ERR(0, 13, __pyx_L7_error)
+          if (!(likely(PyList_CheckExact(__pyx_t_5))||((__pyx_t_5) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_5)->tp_name), 0))) __PYX_ERR(0, 18, __pyx_L7_error)
           __pyx_v_docs = ((PyObject*)__pyx_t_5);
           __pyx_t_5 = 0;
 
-          /* "mini_project2/phase1/serializeDocumentsFrom.pyx":14
+          /* "mini_project2/phase1/serializeDocumentsFrom.pyx":19
  *     with open(os.path.join(dir_path, f_name), 'r') as f:
  *         docs = json.load(f)[collName]['row']
  *         if collName == 'posts':             # <<<<<<<<<<<<<<
+ *             print("Extracting terms from posts...")
+ *             for doc in docs:
+ */
+          __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_collName, __pyx_n_s_posts, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 19, __pyx_L7_error)
+          if (__pyx_t_10) {
+
+            /* "mini_project2/phase1/serializeDocumentsFrom.pyx":20
+ *         docs = json.load(f)[collName]['row']
+ *         if collName == 'posts':
+ *             print("Extracting terms from posts...")             # <<<<<<<<<<<<<<
  *             for doc in docs:
  *                 doc['terms'] = extractTermsFrom(doc)
  */
-          __pyx_t_10 = (__Pyx_PyString_Equals(__pyx_v_collName, __pyx_n_s_posts, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 14, __pyx_L7_error)
-          if (__pyx_t_10) {
+            if (__Pyx_PrintOne(0, __pyx_kp_s_Extracting_terms_from_posts) < 0) __PYX_ERR(0, 20, __pyx_L7_error)
 
-            /* "mini_project2/phase1/serializeDocumentsFrom.pyx":15
- *         docs = json.load(f)[collName]['row']
+            /* "mini_project2/phase1/serializeDocumentsFrom.pyx":21
  *         if collName == 'posts':
+ *             print("Extracting terms from posts...")
  *             for doc in docs:             # <<<<<<<<<<<<<<
  *                 doc['terms'] = extractTermsFrom(doc)
- * 
+ *             print(green("Done!"))
  */
             if (unlikely(__pyx_v_docs == Py_None)) {
               PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-              __PYX_ERR(0, 15, __pyx_L7_error)
+              __PYX_ERR(0, 21, __pyx_L7_error)
             }
             __pyx_t_5 = __pyx_v_docs; __Pyx_INCREF(__pyx_t_5); __pyx_t_11 = 0;
             for (;;) {
               if (__pyx_t_11 >= PyList_GET_SIZE(__pyx_t_5)) break;
               #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-              __pyx_t_3 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_11); __Pyx_INCREF(__pyx_t_3); __pyx_t_11++; if (unlikely(0 < 0)) __PYX_ERR(0, 15, __pyx_L7_error)
+              __pyx_t_3 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_11); __Pyx_INCREF(__pyx_t_3); __pyx_t_11++; if (unlikely(0 < 0)) __PYX_ERR(0, 21, __pyx_L7_error)
               #else
-              __pyx_t_3 = PySequence_ITEM(__pyx_t_5, __pyx_t_11); __pyx_t_11++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 15, __pyx_L7_error)
+              __pyx_t_3 = PySequence_ITEM(__pyx_t_5, __pyx_t_11); __pyx_t_11++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 21, __pyx_L7_error)
               __Pyx_GOTREF(__pyx_t_3);
               #endif
               __Pyx_XDECREF_SET(__pyx_v_doc, __pyx_t_3);
               __pyx_t_3 = 0;
 
-              /* "mini_project2/phase1/serializeDocumentsFrom.pyx":16
- *         if collName == 'posts':
+              /* "mini_project2/phase1/serializeDocumentsFrom.pyx":22
+ *             print("Extracting terms from posts...")
  *             for doc in docs:
  *                 doc['terms'] = extractTermsFrom(doc)             # <<<<<<<<<<<<<<
+ *             print(green("Done!"))
  * 
- *     return docs
  */
-              __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_extractTermsFrom); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L7_error)
+              __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_extractTermsFrom); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L7_error)
               __Pyx_GOTREF(__pyx_t_1);
               __pyx_t_2 = NULL;
               if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
@@ -1598,32 +1615,59 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
               }
               __pyx_t_3 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_2, __pyx_v_doc) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_doc);
               __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-              if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 16, __pyx_L7_error)
+              if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 22, __pyx_L7_error)
               __Pyx_GOTREF(__pyx_t_3);
               __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-              if (unlikely(PyObject_SetItem(__pyx_v_doc, __pyx_n_s_terms, __pyx_t_3) < 0)) __PYX_ERR(0, 16, __pyx_L7_error)
+              if (unlikely(PyObject_SetItem(__pyx_v_doc, __pyx_n_s_terms, __pyx_t_3) < 0)) __PYX_ERR(0, 22, __pyx_L7_error)
               __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-              /* "mini_project2/phase1/serializeDocumentsFrom.pyx":15
- *         docs = json.load(f)[collName]['row']
+              /* "mini_project2/phase1/serializeDocumentsFrom.pyx":21
  *         if collName == 'posts':
+ *             print("Extracting terms from posts...")
  *             for doc in docs:             # <<<<<<<<<<<<<<
  *                 doc['terms'] = extractTermsFrom(doc)
- * 
+ *             print(green("Done!"))
  */
             }
             __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-            /* "mini_project2/phase1/serializeDocumentsFrom.pyx":14
+            /* "mini_project2/phase1/serializeDocumentsFrom.pyx":23
+ *             for doc in docs:
+ *                 doc['terms'] = extractTermsFrom(doc)
+ *             print(green("Done!"))             # <<<<<<<<<<<<<<
+ * 
+ *     return docs
+ */
+            __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_green); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 23, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_3);
+            __pyx_t_1 = NULL;
+            if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
+              __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_3);
+              if (likely(__pyx_t_1)) {
+                PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+                __Pyx_INCREF(__pyx_t_1);
+                __Pyx_INCREF(function);
+                __Pyx_DECREF_SET(__pyx_t_3, function);
+              }
+            }
+            __pyx_t_5 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_1, __pyx_kp_s_Done) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_kp_s_Done);
+            __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
+            if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 23, __pyx_L7_error)
+            __Pyx_GOTREF(__pyx_t_5);
+            __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+            if (__Pyx_PrintOne(0, __pyx_t_5) < 0) __PYX_ERR(0, 23, __pyx_L7_error)
+            __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+
+            /* "mini_project2/phase1/serializeDocumentsFrom.pyx":19
  *     with open(os.path.join(dir_path, f_name), 'r') as f:
  *         docs = json.load(f)[collName]['row']
  *         if collName == 'posts':             # <<<<<<<<<<<<<<
+ *             print("Extracting terms from posts...")
  *             for doc in docs:
- *                 doc['terms'] = extractTermsFrom(doc)
  */
           }
 
-          /* "mini_project2/phase1/serializeDocumentsFrom.pyx":12
+          /* "mini_project2/phase1/serializeDocumentsFrom.pyx":17
  *     collName = f_name[:-5].lower()
  *     print("Loading {}...".format(f_name))
  *     with open(os.path.join(dir_path, f_name), 'r') as f:             # <<<<<<<<<<<<<<
@@ -1642,20 +1686,20 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
         /*except:*/ {
           __Pyx_AddTraceback("mini_project2.phase1.serializeDocumentsFrom.serializeDocumentsFrom", __pyx_clineno, __pyx_lineno, __pyx_filename);
-          if (__Pyx_GetException(&__pyx_t_5, &__pyx_t_3, &__pyx_t_1) < 0) __PYX_ERR(0, 12, __pyx_L9_except_error)
+          if (__Pyx_GetException(&__pyx_t_5, &__pyx_t_3, &__pyx_t_1) < 0) __PYX_ERR(0, 17, __pyx_L9_except_error)
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_GOTREF(__pyx_t_3);
           __Pyx_GOTREF(__pyx_t_1);
-          __pyx_t_2 = PyTuple_Pack(3, __pyx_t_5, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 12, __pyx_L9_except_error)
+          __pyx_t_2 = PyTuple_Pack(3, __pyx_t_5, __pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L9_except_error)
           __Pyx_GOTREF(__pyx_t_2);
           __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_2, NULL);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 12, __pyx_L9_except_error)
+          if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 17, __pyx_L9_except_error)
           __Pyx_GOTREF(__pyx_t_12);
           __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_12);
           __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-          if (__pyx_t_10 < 0) __PYX_ERR(0, 12, __pyx_L9_except_error)
+          if (__pyx_t_10 < 0) __PYX_ERR(0, 17, __pyx_L9_except_error)
           __pyx_t_13 = ((!(__pyx_t_10 != 0)) != 0);
           if (__pyx_t_13) {
             __Pyx_GIVEREF(__pyx_t_5);
@@ -1663,7 +1707,7 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
             __Pyx_XGIVEREF(__pyx_t_1);
             __Pyx_ErrRestoreWithState(__pyx_t_5, __pyx_t_3, __pyx_t_1);
             __pyx_t_5 = 0; __pyx_t_3 = 0; __pyx_t_1 = 0; 
-            __PYX_ERR(0, 12, __pyx_L9_except_error)
+            __PYX_ERR(0, 17, __pyx_L9_except_error)
           }
           __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -1689,7 +1733,7 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
         if (__pyx_t_6) {
           __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_tuple_, NULL);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 12, __pyx_L1_error)
+          if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 17, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_9);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         }
@@ -1704,25 +1748,23 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
     __pyx_L19:;
   }
 
-  /* "mini_project2/phase1/serializeDocumentsFrom.pyx":18
- *                 doc['terms'] = extractTermsFrom(doc)
+  /* "mini_project2/phase1/serializeDocumentsFrom.pyx":25
+ *             print(green("Done!"))
  * 
  *     return docs             # <<<<<<<<<<<<<<
- * 
- * 
  */
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_v_docs)) { __Pyx_RaiseUnboundLocalError("docs"); __PYX_ERR(0, 18, __pyx_L1_error) }
+  if (unlikely(!__pyx_v_docs)) { __Pyx_RaiseUnboundLocalError("docs"); __PYX_ERR(0, 25, __pyx_L1_error) }
   __Pyx_INCREF(__pyx_v_docs);
   __pyx_r = __pyx_v_docs;
   goto __pyx_L0;
 
-  /* "mini_project2/phase1/serializeDocumentsFrom.pyx":7
+  /* "mini_project2/phase1/serializeDocumentsFrom.pyx":9
  * 
  * 
  * cpdef list serializeDocumentsFrom(str dir_path, str f_name):             # <<<<<<<<<<<<<<
- * 
- *     cdef list docs
+ *     '''
+ *     Loads and serializes a json file. Extract terms from title, body, and tags if the data is for posts.
  */
 
   /* function exit code */
@@ -1745,6 +1787,7 @@ static PyObject *__pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serial
 
 /* Python wrapper */
 static PyObject *__pyx_pw_13mini_project2_6phase1_22serializeDocumentsFrom_1serializeDocumentsFrom(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_13mini_project2_6phase1_22serializeDocumentsFrom_serializeDocumentsFrom[] = "\n    Loads and serializes a json file. Extract terms from title, body, and tags if the data is for posts.\n    Returns the data in a list.\n    ";
 static PyObject *__pyx_pw_13mini_project2_6phase1_22serializeDocumentsFrom_1serializeDocumentsFrom(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_dir_path = 0;
   PyObject *__pyx_v_f_name = 0;
@@ -1777,11 +1820,11 @@ static PyObject *__pyx_pw_13mini_project2_6phase1_22serializeDocumentsFrom_1seri
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_f_name)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("serializeDocumentsFrom", 1, 2, 2, 1); __PYX_ERR(0, 7, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("serializeDocumentsFrom", 1, 2, 2, 1); __PYX_ERR(0, 9, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "serializeDocumentsFrom") < 0)) __PYX_ERR(0, 7, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "serializeDocumentsFrom") < 0)) __PYX_ERR(0, 9, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -1794,14 +1837,14 @@ static PyObject *__pyx_pw_13mini_project2_6phase1_22serializeDocumentsFrom_1seri
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("serializeDocumentsFrom", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 7, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("serializeDocumentsFrom", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 9, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mini_project2.phase1.serializeDocumentsFrom.serializeDocumentsFrom", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_dir_path), (&PyString_Type), 1, "dir_path", 1))) __PYX_ERR(0, 7, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_f_name), (&PyString_Type), 1, "f_name", 1))) __PYX_ERR(0, 7, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_dir_path), (&PyString_Type), 1, "dir_path", 1))) __PYX_ERR(0, 9, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_f_name), (&PyString_Type), 1, "f_name", 1))) __PYX_ERR(0, 9, __pyx_L1_error)
   __pyx_r = __pyx_pf_13mini_project2_6phase1_22serializeDocumentsFrom_serializeDocumentsFrom(__pyx_self, __pyx_v_dir_path, __pyx_v_f_name);
 
   /* function exit code */
@@ -1822,7 +1865,7 @@ static PyObject *__pyx_pf_13mini_project2_6phase1_22serializeDocumentsFrom_seria
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("serializeDocumentsFrom", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serializeDocumentsFrom(__pyx_v_dir_path, __pyx_v_f_name, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 7, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_13mini_project2_6phase1_22serializeDocumentsFrom_serializeDocumentsFrom(__pyx_v_dir_path, __pyx_v_f_name, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1840,7 +1883,7 @@ static PyObject *__pyx_pf_13mini_project2_6phase1_22serializeDocumentsFrom_seria
 }
 
 static PyMethodDef __pyx_methods[] = {
-  {"serializeDocumentsFrom", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_13mini_project2_6phase1_22serializeDocumentsFrom_1serializeDocumentsFrom, METH_VARARGS|METH_KEYWORDS, 0},
+  {"serializeDocumentsFrom", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_13mini_project2_6phase1_22serializeDocumentsFrom_1serializeDocumentsFrom, METH_VARARGS|METH_KEYWORDS, __pyx_doc_13mini_project2_6phase1_22serializeDocumentsFrom_serializeDocumentsFrom},
   {0, 0, 0, 0}
 };
 
@@ -1886,7 +1929,10 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
+  {&__pyx_kp_s_Done, __pyx_k_Done, sizeof(__pyx_k_Done), 0, 0, 1, 0},
+  {&__pyx_kp_s_Extracting_terms_from_posts, __pyx_k_Extracting_terms_from_posts, sizeof(__pyx_k_Extracting_terms_from_posts), 0, 0, 1, 0},
   {&__pyx_kp_s_Loading, __pyx_k_Loading, sizeof(__pyx_k_Loading), 0, 0, 1, 0},
+  {&__pyx_n_s_bcolor_bcolor, __pyx_k_bcolor_bcolor, sizeof(__pyx_k_bcolor_bcolor), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_dir_path, __pyx_k_dir_path, sizeof(__pyx_k_dir_path), 0, 0, 1, 1},
   {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
@@ -1896,6 +1942,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_f_name, __pyx_k_f_name, sizeof(__pyx_k_f_name), 0, 0, 1, 1},
   {&__pyx_n_s_file, __pyx_k_file, sizeof(__pyx_k_file), 0, 0, 1, 1},
   {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
+  {&__pyx_n_s_green, __pyx_k_green, sizeof(__pyx_k_green), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_join, __pyx_k_join, sizeof(__pyx_k_join), 0, 0, 1, 1},
   {&__pyx_n_s_json, __pyx_k_json, sizeof(__pyx_k_json), 0, 0, 1, 1},
@@ -1916,7 +1963,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_open = __Pyx_GetBuiltinName(__pyx_n_s_open); if (!__pyx_builtin_open) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_builtin_open = __Pyx_GetBuiltinName(__pyx_n_s_open); if (!__pyx_builtin_open) __PYX_ERR(0, 17, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -1926,14 +1973,14 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "mini_project2/phase1/serializeDocumentsFrom.pyx":12
+  /* "mini_project2/phase1/serializeDocumentsFrom.pyx":17
  *     collName = f_name[:-5].lower()
  *     print("Loading {}...".format(f_name))
  *     with open(os.path.join(dir_path, f_name), 'r') as f:             # <<<<<<<<<<<<<<
  *         docs = json.load(f)[collName]['row']
  *         if collName == 'posts':
  */
-  __pyx_tuple_ = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
   __Pyx_RefNannyFinishContext();
@@ -2243,7 +2290,7 @@ if (!__Pyx_RefNanny) {
  * 
  * from phase1.extractTermsFrom import extractTermsFrom             # <<<<<<<<<<<<<<
  * 
- * 
+ * from bcolor.bcolor import green
  */
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -2259,15 +2306,36 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
+  /* "mini_project2/phase1/serializeDocumentsFrom.pyx":6
+ * from phase1.extractTermsFrom import extractTermsFrom
+ * 
+ * from bcolor.bcolor import green             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 6, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_n_s_green);
+  __Pyx_GIVEREF(__pyx_n_s_green);
+  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_green);
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_bcolor_bcolor, __pyx_t_2, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_green); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 6, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_green, __pyx_t_2) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
   /* "mini_project2/phase1/serializeDocumentsFrom.pyx":1
  * import os             # <<<<<<<<<<<<<<
  * import json
  * 
  */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /*--- Wrapped vars code ---*/
 

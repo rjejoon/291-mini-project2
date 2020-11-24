@@ -1,6 +1,6 @@
 cpdef list extractTermsFrom(dict postDoc):
     '''
-    Extracts unique terms from the title and body if those fields exist in the given post document, 
+    Extracts unique terms from the title, body, and tags fields, if they exist, in the given post document, 
     and returns them in a list.
     '''
     cdef set terms = set()
@@ -19,8 +19,7 @@ cpdef list extractTermsFrom(dict postDoc):
 
 cdef void filterTerms(set terms, str s):
     '''
-    Filters out alphanumeric terms that are at least 3 chars long from the given string and
-    returns only the unique ones.
+    Filters out unique alphanumeric terms that are at least 3 chars long from the given string.
     '''
     if len(s) == 0:
         return 
