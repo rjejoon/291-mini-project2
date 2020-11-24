@@ -130,9 +130,7 @@ def displaySearchResult(resultList, posts):
         # post is selected
         if opt.isdigit():
             no = int(opt) - 1      # to match zero-index array
-            uin = getValidInput(warning('Do you want to see the detailed information on this post? [y/n] '), ['y','n'])
-            if uin == 'y':
-                displaySelectedPost(resultList, posts, no)
+            displaySelectedPost(resultList, posts, no)
             action = getAction()
             choseAction = True
 
