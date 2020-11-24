@@ -1162,7 +1162,7 @@ static PyObject *__pyx_pf_13mini_project2_6phase1_16extractTermsFrom_extractTerm
 /* "mini_project2/phase1/extractTermsFrom.pyx":1
  * cpdef list extractTermsFrom(dict postDoc):             # <<<<<<<<<<<<<<
  *     '''
- *     Extracts unique terms from the title and body if those fields exist in the given post document,
+ *     Extracts unique terms from the title, body, and tags fields, if they exist, in the given post document,
  */
 
 static PyObject *__pyx_pw_13mini_project2_6phase1_16extractTermsFrom_1extractTermsFrom(PyObject *__pyx_self, PyObject *__pyx_v_postDoc); /*proto*/
@@ -1330,7 +1330,7 @@ static PyObject *__pyx_f_13mini_project2_6phase1_16extractTermsFrom_extractTerms
   /* "mini_project2/phase1/extractTermsFrom.pyx":1
  * cpdef list extractTermsFrom(dict postDoc):             # <<<<<<<<<<<<<<
  *     '''
- *     Extracts unique terms from the title and body if those fields exist in the given post document,
+ *     Extracts unique terms from the title, body, and tags fields, if they exist, in the given post document,
  */
 
   /* function exit code */
@@ -1347,7 +1347,7 @@ static PyObject *__pyx_f_13mini_project2_6phase1_16extractTermsFrom_extractTerms
 
 /* Python wrapper */
 static PyObject *__pyx_pw_13mini_project2_6phase1_16extractTermsFrom_1extractTermsFrom(PyObject *__pyx_self, PyObject *__pyx_v_postDoc); /*proto*/
-static char __pyx_doc_13mini_project2_6phase1_16extractTermsFrom_extractTermsFrom[] = "\n    Extracts unique terms from the title and body if those fields exist in the given post document, \n    and returns them in a list.\n    ";
+static char __pyx_doc_13mini_project2_6phase1_16extractTermsFrom_extractTermsFrom[] = "\n    Extracts unique terms from the title, body, and tags fields, if they exist, in the given post document, \n    and returns them in a list.\n    ";
 static PyObject *__pyx_pw_13mini_project2_6phase1_16extractTermsFrom_1extractTermsFrom(PyObject *__pyx_self, PyObject *__pyx_v_postDoc) {
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -1398,7 +1398,7 @@ static PyObject *__pyx_pf_13mini_project2_6phase1_16extractTermsFrom_extractTerm
  * 
  * cdef void filterTerms(set terms, str s):             # <<<<<<<<<<<<<<
  *     '''
- *     Filters out alphanumeric terms that are at least 3 chars long from the given string and
+ *     Filters out unique alphanumeric terms that are at least 3 chars long from the given string.
  */
 
 static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObject *__pyx_v_terms, PyObject *__pyx_v_s) {
@@ -1419,18 +1419,18 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("filterTerms", 0);
 
-  /* "mini_project2/phase1/extractTermsFrom.pyx":25
- *     returns only the unique ones.
+  /* "mini_project2/phase1/extractTermsFrom.pyx":24
+ *     Filters out unique alphanumeric terms that are at least 3 chars long from the given string.
  *     '''
  *     if len(s) == 0:             # <<<<<<<<<<<<<<
  *         return
  * 
  */
-  __pyx_t_1 = PyObject_Length(__pyx_v_s); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(__pyx_v_s); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 24, __pyx_L1_error)
   __pyx_t_2 = ((__pyx_t_1 == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "mini_project2/phase1/extractTermsFrom.pyx":26
+    /* "mini_project2/phase1/extractTermsFrom.pyx":25
  *     '''
  *     if len(s) == 0:
  *         return             # <<<<<<<<<<<<<<
@@ -1439,8 +1439,8 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
  */
     goto __pyx_L0;
 
-    /* "mini_project2/phase1/extractTermsFrom.pyx":25
- *     returns only the unique ones.
+    /* "mini_project2/phase1/extractTermsFrom.pyx":24
+ *     Filters out unique alphanumeric terms that are at least 3 chars long from the given string.
  *     '''
  *     if len(s) == 0:             # <<<<<<<<<<<<<<
  *         return
@@ -1448,7 +1448,7 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
  */
   }
 
-  /* "mini_project2/phase1/extractTermsFrom.pyx":29
+  /* "mini_project2/phase1/extractTermsFrom.pyx":28
  * 
  *     # does not handle for case-insensitive
  *     cdef unsigned int start = 0             # <<<<<<<<<<<<<<
@@ -1457,7 +1457,7 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
  */
   __pyx_v_start = 0;
 
-  /* "mini_project2/phase1/extractTermsFrom.pyx":30
+  /* "mini_project2/phase1/extractTermsFrom.pyx":29
  *     # does not handle for case-insensitive
  *     cdef unsigned int start = 0
  *     cdef unsigned int i = 0             # <<<<<<<<<<<<<<
@@ -1466,28 +1466,28 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
  */
   __pyx_v_i = 0;
 
-  /* "mini_project2/phase1/extractTermsFrom.pyx":31
+  /* "mini_project2/phase1/extractTermsFrom.pyx":30
  *     cdef unsigned int start = 0
  *     cdef unsigned int i = 0
  *     for i in range(len(s)):             # <<<<<<<<<<<<<<
  *         if not s[i].isalnum():
  *             if i - start >= 3:    # len of term must be larger than 3
  */
-  __pyx_t_1 = PyObject_Length(__pyx_v_s); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(__pyx_v_s); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 30, __pyx_L1_error)
   __pyx_t_3 = __pyx_t_1;
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
 
-    /* "mini_project2/phase1/extractTermsFrom.pyx":32
+    /* "mini_project2/phase1/extractTermsFrom.pyx":31
  *     cdef unsigned int i = 0
  *     for i in range(len(s)):
  *         if not s[i].isalnum():             # <<<<<<<<<<<<<<
  *             if i - start >= 3:    # len of term must be larger than 3
  *                 terms.add(s[start:i])
  */
-    __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_s, __pyx_v_i, unsigned int, 0, __Pyx_PyInt_From_unsigned_int, 0, 0, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 32, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_s, __pyx_v_i, unsigned int, 0, __Pyx_PyInt_From_unsigned_int, 0, 0, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 31, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_isalnum); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 32, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_isalnum); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 31, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_6 = NULL;
@@ -1502,15 +1502,15 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
     }
     __pyx_t_5 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_7);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 32, __pyx_L1_error)
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 31, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 32, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 31, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_8 = ((!__pyx_t_2) != 0);
     if (__pyx_t_8) {
 
-      /* "mini_project2/phase1/extractTermsFrom.pyx":33
+      /* "mini_project2/phase1/extractTermsFrom.pyx":32
  *     for i in range(len(s)):
  *         if not s[i].isalnum():
  *             if i - start >= 3:    # len of term must be larger than 3             # <<<<<<<<<<<<<<
@@ -1520,7 +1520,7 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
       __pyx_t_8 = (((__pyx_v_i - __pyx_v_start) >= 3) != 0);
       if (__pyx_t_8) {
 
-        /* "mini_project2/phase1/extractTermsFrom.pyx":34
+        /* "mini_project2/phase1/extractTermsFrom.pyx":33
  *         if not s[i].isalnum():
  *             if i - start >= 3:    # len of term must be larger than 3
  *                 terms.add(s[start:i])             # <<<<<<<<<<<<<<
@@ -1529,18 +1529,18 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
  */
         if (unlikely(__pyx_v_terms == Py_None)) {
           PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "add");
-          __PYX_ERR(0, 34, __pyx_L1_error)
+          __PYX_ERR(0, 33, __pyx_L1_error)
         }
         if (unlikely(__pyx_v_s == Py_None)) {
           PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-          __PYX_ERR(0, 34, __pyx_L1_error)
+          __PYX_ERR(0, 33, __pyx_L1_error)
         }
-        __pyx_t_5 = PySequence_GetSlice(__pyx_v_s, __pyx_v_start, __pyx_v_i); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 34, __pyx_L1_error)
+        __pyx_t_5 = PySequence_GetSlice(__pyx_v_s, __pyx_v_start, __pyx_v_i); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 33, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_9 = PySet_Add(__pyx_v_terms, __pyx_t_5); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 34, __pyx_L1_error)
+        __pyx_t_9 = PySet_Add(__pyx_v_terms, __pyx_t_5); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 33, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-        /* "mini_project2/phase1/extractTermsFrom.pyx":33
+        /* "mini_project2/phase1/extractTermsFrom.pyx":32
  *     for i in range(len(s)):
  *         if not s[i].isalnum():
  *             if i - start >= 3:    # len of term must be larger than 3             # <<<<<<<<<<<<<<
@@ -1549,7 +1549,7 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
  */
       }
 
-      /* "mini_project2/phase1/extractTermsFrom.pyx":35
+      /* "mini_project2/phase1/extractTermsFrom.pyx":34
  *             if i - start >= 3:    # len of term must be larger than 3
  *                 terms.add(s[start:i])
  *             start = i + 1             # <<<<<<<<<<<<<<
@@ -1558,7 +1558,7 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
  */
       __pyx_v_start = (__pyx_v_i + 1);
 
-      /* "mini_project2/phase1/extractTermsFrom.pyx":32
+      /* "mini_project2/phase1/extractTermsFrom.pyx":31
  *     cdef unsigned int i = 0
  *     for i in range(len(s)):
  *         if not s[i].isalnum():             # <<<<<<<<<<<<<<
@@ -1568,16 +1568,16 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
     }
   }
 
-  /* "mini_project2/phase1/extractTermsFrom.pyx":37
+  /* "mini_project2/phase1/extractTermsFrom.pyx":36
  *             start = i + 1
  * 
  *     if s[i].isalnum() and (i - start) + 1 >= 3:             # <<<<<<<<<<<<<<
  *         terms.add(s[start:i+1])
  * 
  */
-  __pyx_t_7 = __Pyx_GetItemInt(__pyx_v_s, __pyx_v_i, unsigned int, 0, __Pyx_PyInt_From_unsigned_int, 0, 0, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_GetItemInt(__pyx_v_s, __pyx_v_i, unsigned int, 0, __Pyx_PyInt_From_unsigned_int, 0, 0, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_isalnum); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_isalnum); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_t_7 = NULL;
@@ -1592,10 +1592,10 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
   }
   __pyx_t_5 = (__pyx_t_7) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 37, __pyx_L1_error)
+  if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   if (__pyx_t_2) {
   } else {
@@ -1607,7 +1607,7 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
   __pyx_L9_bool_binop_done:;
   if (__pyx_t_8) {
 
-    /* "mini_project2/phase1/extractTermsFrom.pyx":38
+    /* "mini_project2/phase1/extractTermsFrom.pyx":37
  * 
  *     if s[i].isalnum() and (i - start) + 1 >= 3:
  *         terms.add(s[start:i+1])             # <<<<<<<<<<<<<<
@@ -1615,18 +1615,18 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
  */
     if (unlikely(__pyx_v_terms == Py_None)) {
       PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "add");
-      __PYX_ERR(0, 38, __pyx_L1_error)
+      __PYX_ERR(0, 37, __pyx_L1_error)
     }
     if (unlikely(__pyx_v_s == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 38, __pyx_L1_error)
+      __PYX_ERR(0, 37, __pyx_L1_error)
     }
-    __pyx_t_5 = PySequence_GetSlice(__pyx_v_s, __pyx_v_start, (__pyx_v_i + 1)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 38, __pyx_L1_error)
+    __pyx_t_5 = PySequence_GetSlice(__pyx_v_s, __pyx_v_start, (__pyx_v_i + 1)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 37, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_9 = PySet_Add(__pyx_v_terms, __pyx_t_5); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 38, __pyx_L1_error)
+    __pyx_t_9 = PySet_Add(__pyx_v_terms, __pyx_t_5); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 37, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "mini_project2/phase1/extractTermsFrom.pyx":37
+    /* "mini_project2/phase1/extractTermsFrom.pyx":36
  *             start = i + 1
  * 
  *     if s[i].isalnum() and (i - start) + 1 >= 3:             # <<<<<<<<<<<<<<
@@ -1640,7 +1640,7 @@ static void __pyx_f_13mini_project2_6phase1_16extractTermsFrom_filterTerms(PyObj
  * 
  * cdef void filterTerms(set terms, str s):             # <<<<<<<<<<<<<<
  *     '''
- *     Filters out alphanumeric terms that are at least 3 chars long from the given string and
+ *     Filters out unique alphanumeric terms that are at least 3 chars long from the given string.
  */
 
   /* function exit code */
@@ -1713,7 +1713,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 30, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -2002,7 +2002,7 @@ if (!__Pyx_RefNanny) {
   /* "mini_project2/phase1/extractTermsFrom.pyx":1
  * cpdef list extractTermsFrom(dict postDoc):             # <<<<<<<<<<<<<<
  *     '''
- *     Extracts unique terms from the title and body if those fields exist in the given post document,
+ *     Extracts unique terms from the title, body, and tags fields, if they exist, in the given post document,
  */
   __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);

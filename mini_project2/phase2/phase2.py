@@ -4,10 +4,7 @@ import os
 from pymongo import MongoClient
 
 from phase1.phase1 import getPort
-from bcolor.bcolor import errmsg
-from bcolor.bcolor import pink
-from bcolor.bcolor import underline
-from bcolor.bcolor import bold 
+
 from phase2.displayReport import displayReport
 from phase2.postQA import postQ, postAns
 from phase2.searchQ import searchQ
@@ -15,45 +12,42 @@ from phase2.listAnswers import listAnswers
 from phase2.votePost import votePost
 from phase2.getValidInput import getValidInput 
 
+from bcolor.bcolor import errmsg, pink, underline, bold
+
 
 def main() -> int:
     '''
-    Main loop of the program.
+    Main loop of the phase 2.
     '''
     try:
         port = getPort()
         client = MongoClient(port=port)
         db = client['291db']
-        os.system('clear')
+        clear()
         uid = getUid()
         displayReport(db, uid)
 
         pressedExit = False
         while not pressedExit:
             printInterface(uid)
-            com = getValidInput("Enter a command: ", ['sq', 'pq', 'q'])
+            command = getValidInput("Enter a command: ", ['sq', 'pq', 'q'])
 
-            if com == 'sq':
+            if command == 'sq':
                 targetQ, action = searchQ(db)
-
                 if action == 'pa':
-
                     postAns(db['posts'], uid, targetQ['Id'])
-
                 elif action == 'vp' or (action == 'la' and listAnswers(db['posts'], targetQ)):
                     votePost(db['votes'], uid, targetQ['Id'])
-
                 elif action == 'bm':
-                    os.system('clear')
-                    
-            elif com == 'pq':
+                    clear()
+            elif command == 'pq':
                 postQ(db, uid)
             else:
                 pressedExit = True
 
         return 0
 
-    except Exception as e:
+    except:
         print(traceback.print_exc())
         return 1
 
@@ -67,7 +61,7 @@ def printInterface(uid):
     Displays a phase 2 main menu interface.
     '''
     if uid == '':
-        uid = 'anonymous'
+       uid = 'anonymous'
 
     header = "{}    User id: {}\n".format(pink('< M E N U >'), uid)
     pq = "{}ost a {}uestion".format(underline('P'), underline('Q'))
@@ -91,10 +85,17 @@ def getUid() -> str:
     while True:
         uid = input('Enter your id: ')
         if uid == '':
-            return '' 
+            return ''
         if uid.isdigit():
             return uid
-        else:
-            print(errmsg("error: id must a number"))
+        print(errmsg("error: uid must be a number"))
 
 
+def clear():
+    '''
+    Clears the shell.
+    '''
+    if os.name == 'nt':
+        os.system('cls')
+    elif os.name == 'posix':
+        os.system('clear')

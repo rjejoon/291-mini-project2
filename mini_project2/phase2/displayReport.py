@@ -1,19 +1,18 @@
 from pymongo import MongoClient
 
-from bcolor.bcolor import bold
-from bcolor.bcolor import cyan
+from bcolor.bcolor import bold, cyan
 
 
 def displayReport(db, uid: str) -> bool:
     '''
     Displays a report of the user if not signed in as anonymous.
     The user report includes:
-        the # of questions owned and the average score for those questions, 
-        the # of answers owned and the average score for those answers, and 
-        the # of votes registered for the user
+        1. the # of questions owned and the average score for those questions, 
+        2. the # of answers owned and the average score for those answers, and 
+        3. the # of votes registered for the user
     
     Inputs:
-        db -- pymongo.database.Database
+        db -- Database
         uid -- str
     Returns:
         bool
@@ -22,40 +21,51 @@ def displayReport(db, uid: str) -> bool:
         # no report is displayed
         return False
 
-    qInfo = getQInfo(db['posts'], uid)
-    aInfo = getAInfo(db['posts'], uid)
-    vInfo = getVInfo(db['posts'], uid)
+    qInfo = getQInfoQuery(db['posts'], uid)
+    aInfo = getAInfoQuery(db['posts'], uid)
+    vInfo = getVInfoQuery(db['posts'], uid)
 
     print()
     header = cyan("Report for user: ") + uid
     print(header)
     print()
 
-    # TODO What to print if the info is None?
     print(bold("   Questions"))
+    exists = False
     for doc in qInfo:
+        exists = True
         print("      Owned: {} avg score: {}".format(doc['count'], round(doc['avgScore'], 2)))
+    if not exists:
+        print("      N/A")
 
     print(bold("   Answers"))
+    exists = False
     for doc in aInfo:
-        print("      Owned: {}, avg score: {}".format(doc['count'], round(doc['avgScore'], 2)))
+        exists = True
+        print("      Owned: {} avg score: {}".format(doc['count'], round(doc['avgScore'], 2)))
+    if not exists:
+        print("      N/A")
 
     print(bold("   Votes"))
+    exists = False
     for doc in vInfo:
+        exists = True
         print("      You got {} votes!".format(doc['count']))
+    if not exists:
+        print("      N/A")
 
     return True
 
 
-def getQInfo(posts, uid):
+def getQInfoQuery(posts, uid):
     '''
-    Gets the # of questions the user owned and the average score for those questions 
+    Gets the # of questions the user owned and the average score for those questions.
 
     Inputs:
-        posts -- pymongo.collection.Collection
+        posts -- Collection
         uid -- str
     Return:
-        pymongo.command_cursor.CommandCursor
+        CommandCursor
     '''
     
     return posts.aggregate([
@@ -67,17 +77,16 @@ def getQInfo(posts, uid):
                 ])
 
 
-def getAInfo(posts, uid):
+def getAInfoQuery(posts, uid):
     '''
-    Gets the # of answers the user owned and the average score for those answers
+    Gets the # of answers the user owned and the average score for those answers.
 
     Inputs:
-        posts -- pymongo.collection.Collection
+        posts -- Collection
         uid -- str
     Return:
-        pymongo.command_cursor.CommandCursor
+        CommandCursor
     '''
-
     return posts.aggregate([
                 {"$match": {"$and": [{"OwnerUserId": uid}, 
                                      {"PostTypeId": "2"}]}},
@@ -90,17 +99,17 @@ def getAInfo(posts, uid):
                              }}
                 ])
 
-def getVInfo(posts, uid):
+
+def getVInfoQuery(posts, uid):
     '''
-    Gets the # of votes registered for the user
+    Gets the # of votes registered for the user.
 
     Inputs:
-        posts -- pymongo.collection.Collection
+        posts -- Collection
         uid -- str
     Return:
-        pymongo.command_cursor.CommandCursor
+        CommandCursor
     '''
-
     return posts.aggregate([
                 {"$match": {"OwnerUserId": uid}}, 
                 {"$project": {"Id": 1, "OwnerUserId": 1}},
