@@ -1,16 +1,9 @@
 import os
 from setuptools import Extension, setup, find_packages
 from Cython.Build import cythonize
-# from pipenv.project import Project
-# from pipenv.utils import convert_deps_to_pip
 
-
-# pfile = Project(chdir=False).parsed_pipfile
-# requirements = convert_deps_to_pip(pfile['packages'], r=False)
-# test_requirements = convert_deps_to_pip(pfile['dev-packages'], r=False)
-
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+# with open("README.md", "r") as fh:
+    # long_description = fh.read()
 
 extensions = [
         Extension('mini_project2.phase1.extractTermsFrom', [os.path.join('mini_project2','phase1', 'extractTermsFrom.pyx')]),
@@ -23,8 +16,8 @@ setup(
     author='Jejoon Ryu, Moe Numasawa, Junhyeon Cho',
     author_email='jejoon@ualberta.ca, numasawa@ualberta.ca, junhyeon@ualberta.ca',
     description='CMPUT 291 F20 mini project 2',
-    long_description=long_description,
-    long_description_content_type='text/markdown',
+    # long_description=long_description,
+    # long_description_content_type='text/markdown',
     license="MIT License",
     packages=find_packages(),
     install_requires=[
