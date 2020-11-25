@@ -43,7 +43,7 @@ def postQ(db, uid) -> bool:
             
             terms = extractTermsFrom(post)
             if len(terms) > 0:
-                post["terms"] = terms
+                post['terms'] = terms
 
             # add Tags if the user enters at least one tag
             if tagSet:
@@ -57,7 +57,7 @@ def postQ(db, uid) -> bool:
             posted = True
         
         else:
-            prompt = "Do you still want to post a question? [y/n] "
+            prompt = warning("Do you still want to post a question? [y/n] ")
             if getValidInput(prompt, ['y', 'n']) == 'n':
                 posted = False
 
@@ -109,10 +109,9 @@ def postAns(posts, uid, targetPid) -> bool:
             posted = True
 
         else:
-            prompt = "Do you still want to post an answer? [y/n] "
+            prompt = warning("Do you still want to post an answer? [y/n] ")
             if getValidInput(prompt, ['y', 'n']) == 'n':
                 posted = False
-
 
     return posted
 
@@ -233,7 +232,7 @@ def confirmInfo(title, body, tags) -> bool:
     Return:
         bool
     '''
-    tags = 'N/A' if len(tags) == 0 else '<'+'><'.join(tags)+'>'
+    tags = 'N/A' if len(tags) == 0 else ', '.join(tags)
 
     print(warning("\nPlease double check your information:"))
     print()
