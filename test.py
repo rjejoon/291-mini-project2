@@ -7,10 +7,11 @@ db = client['291db']
 dir_path = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(dir_path, "Votes.json"), 'r') as f:
     db['votes'].insert_many(json.load(f)["votes"]['row'], ordered=False)
+    print("Done inserting votes")
 
 with open(os.path.join(dir_path, "Tags.json"), 'r') as f:
     db['tags'].insert_many(json.load(f)["tags"]['row'], ordered=False)
-
+    print("Done inserting tags")
 
 
 
