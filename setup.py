@@ -1,5 +1,5 @@
 import os
-from setuptools import Extension, setup
+from setuptools import Extension, setup, find_packages
 from Cython.Build import cythonize
 # from pipenv.project import Project
 # from pipenv.utils import convert_deps_to_pip
@@ -9,17 +9,36 @@ from Cython.Build import cythonize
 # requirements = convert_deps_to_pip(pfile['packages'], r=False)
 # test_requirements = convert_deps_to_pip(pfile['dev-packages'], r=False)
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
 extensions = [
         Extension('mini_project2.phase1.extractTermsFrom', [os.path.join('mini_project2','phase1', 'extractTermsFrom.pyx')]),
         Extension('mini_project2.phase1.serializeDocumentsFrom', [os.path.join('mini_project2','phase1', 'serializeDocumentsFrom.pyx')])
         ]
 
 setup(
-    name='291_mini_project2',
-    version='0.1.0',
-    description='CMPUT 291 mini project 2',
+    name='mini_project2',
+    version='0.0.1',
     author='Jejoon Ryu, Moe Numasawa, Junhyeon Cho',
     author_email='jejoon@ualberta.ca, numasawa@ualberta.ca, junhyeon@ualberta.ca',
-    # install_requires=requirements,
+    description='CMPUT 291 F20 mini project 2',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
+    license="MIT License",
+    packages=find_packages(),
+    # install_requires=[
+        # "cython",
+        # "pymongo",
+        # "motor"
+    # ],
     ext_modules = cythonize(extensions),
+    url='https://github.com/rjejoon/291_mini_project2',
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: POSIX :: Linux",
+        "Operating System :: Microsoft :: Windows",
+    ],
+    python_requires='>=3.5',
 )

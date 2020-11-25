@@ -9,7 +9,6 @@ pytest = "*"
 [packages]
 pymongo = "*"
 cython = "*"
-tornado = "*"
 motor = "*"
 
 [requires]
