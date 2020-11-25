@@ -1,17 +1,17 @@
-from mini_project2.phase1.phase1 import loadAllDocumentsFrom
-import asyncio, motor.motor_asyncio, sys
+import asyncio, motor.motor_asyncio, sys, os, json
 
 
-
-
-port = sys.argv[1]
+port = int(sys.argv[1])
 client = motor.motor_asyncio.AsyncIOMotorClient(port=port)
 db = client['291db']
-tags = db['tags']
-votes = db['votes']
+dir_path = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(dir_path, "Votes.json"), 'r') as f:
+    db['votes'].insert_many(json.load(f)["Votes"]['row'], ordered=False)
 
-_, voteDocs, tagDocs = loadAllDocumentsFrom('Posts.json', 'Votes.json', 'Tags.json')
+with open(os.path.join(dir_path, "Tags.json"), 'r') as f:
+    db['tags'].insert_many(json.load(f)["Tags"]['row'], ordered=False)
 
-tags.insert_many(tagDocs, ordered=False)
-votes.insert_many(voteDocs, ordered=False)
+
+
+
 

@@ -32,8 +32,6 @@ async def main() -> int:
 
         # collections
         posts = db['posts']
-        tags = db['tags']
-        votes = db['votes']
 
         st = time.time()
         postDocs, voteDocs, tagDocs = loadAllDocumentsFrom('Posts.json', 'Votes.json', 'Tags.json')
@@ -116,9 +114,9 @@ def loadAllDocumentsFrom(*args) -> list:
     dir_path = None
     for temp_dir in dirs_to_test:
         if jsonFilesExistIn(temp_dir, args):
-            dir_path = temp_dir	
+            dir_path = temp_dir
     print(warning("Found {} json files in {}".format(len(args), dir_path)))
-            
+
     return [serializeDocumentsFrom(dir_path, f_name) for f_name in args]
 
 	
