@@ -1,5 +1,3 @@
-from pymongo import MongoClient
-
 from bcolor.bcolor import bold, cyan
 
 

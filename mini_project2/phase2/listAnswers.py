@@ -1,7 +1,3 @@
-import os
-
-from pymongo import MongoClient
-
 from bcolor.bcolor import bold, cyan, warning, errmsg
 from phase2.getValidInput import getValidInput
 from phase2.clear import clear

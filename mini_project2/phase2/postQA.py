@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from pymongo import MongoClient
 from pymongo.collation import Collation
 
 from phase1.extractTermsFrom import extractTermsFrom
