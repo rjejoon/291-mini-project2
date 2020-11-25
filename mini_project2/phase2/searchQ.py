@@ -67,6 +67,7 @@ def findMatch(posts, kwList) -> list:
         resultList -- list
     '''
     st = time.time()
+<<<<<<< HEAD
     kwList1 = []
     kwList2 = []
     resultList = []
@@ -77,12 +78,16 @@ def findMatch(posts, kwList) -> list:
             kwList2.append(kw)
 
     cursor1 = list(posts.find(
+=======
+    cursor = posts.find(
+>>>>>>> eb22e0ed0a91c49b61e47b7670c92332fa365744
              {"$and": [{"terms": {"$in": kwList1}},
                                 {"PostTypeId":"1"}]}
              ).collation({"locale": "en", "strength": 2}))   # collation strength :2 --> case-insensitive
 
     [resultList.append(each) for each in cursor1]
 
+<<<<<<< HEAD
     if len(kwList2) > 0:
         # TODO partial search if we have time 
         # cursor2 = posts.find({ "terms": { "$regex": /789$/ } })
@@ -130,9 +135,11 @@ def findMatch(posts, kwList) -> list:
             ).collation({"locale": "en", "strength": 2}))
             [resultList.append(each) for each in cursor2]
     
+=======
+>>>>>>> eb22e0ed0a91c49b61e47b7670c92332fa365744
     print("Searching took {:5} seconds.".format(time.time() - st))
 
-    return resultList
+    return list(cursor) 
 
 
 def displaySearchResult(resultList, posts):
