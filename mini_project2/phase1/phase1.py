@@ -48,7 +48,8 @@ async def main() -> int:
         #         insert_many_task(votes, voteDocs),
         #         insert_many_task(tags, tagDocs),
         #     )
-        subprocess.Popen(['python3', 'test.py', str(port)])
+        sub_insert_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sub_insert.py')
+        subprocess.Popen(['python3', sub_insert_path, str(port)])
         await insert_many_task(posts, postDocs)
         # await insert_many_task(votes, voteDocs),
         # await insert_many_task(tags, tagDocs),
@@ -101,12 +102,12 @@ def getPort() -> int:
 
     return int(port)
 
-
+# TODO only the post.json will use this function
 def loadAllDocumentsFrom(*args) -> list:
     '''
     Reads and serializes json files and returns the list of MongoDB documents corresponding to each file.
     '''
-    print("\nSearching and loading three json files...")
+    print("\nSearching and loading a json file...")
     desired_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data')
     dirs_to_test = [desired_dir]
     # search from the root dir to 'data' (4 levels)

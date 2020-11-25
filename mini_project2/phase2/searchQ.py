@@ -10,7 +10,8 @@ from bcolor.bcolor import pink, errmsg, cyan, bold, warning
 
 def searchQ(db):
     '''
-    Searches for question posts with the given keywords.
+    Prompts the user for one or more keywords, and 
+    searches for any question posts that have terms equal to the given keywords.
     Prompts the user to perform various actions after selecting a post.
 
     Input:
