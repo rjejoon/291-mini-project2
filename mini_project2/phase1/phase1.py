@@ -32,6 +32,9 @@ async def main() -> int:
 
         # collections
         posts = db['posts']
+        # votes = db['votes']
+        # tags = db['tags']
+
 
         st = time.time()
         postDocs = loadAllDocumentsFrom('Posts.json')
@@ -45,10 +48,10 @@ async def main() -> int:
         #         insert_many_task(votes, voteDocs),
         #         insert_many_task(tags, tagDocs),
         #     )
-
-        # subprocess.Popen(['ls', '-l'])
         subprocess.Popen(['python', 'test.py', str(port)])
         await insert_many_task(posts, postDocs)
+        # await insert_many_task(votes, voteDocs),
+        # await insert_many_task(tags, tagDocs),
         print("Insertions took {:.5f} seconds.\n".format(time.time() - st))
 
         print("Phase 1 complete!")
