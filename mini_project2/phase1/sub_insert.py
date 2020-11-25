@@ -6,7 +6,10 @@ import traceback
 
 import motor.motor_asyncio
 
-from phase1.serializeDocumentsFrom import serializeDocumentsFrom
+OKGREEN = '\033[92m'
+WARNING = '\033[93m'
+FAIL = '\033[91m'
+ENDC = '\033[0m'
 
 
 async def main():
@@ -35,7 +38,7 @@ async def insert_many_task(coll, documents):
     print("Inserting documents to {}...".format(coll.name))
     await coll.insert_many(documents, ordered=False)
     documents.clear()
-    print("Finished inserting {}!".format(coll.name))
+    print(green("Finished inserting {}!".format(coll.name)))
 
 
 def loadAllDocumentsFrom(*args) -> list:
@@ -54,6 +57,10 @@ def loadAllDocumentsFrom(*args) -> list:
     for temp_dir in dirs_to_test:
         if jsonFilesExistIn(temp_dir, args):
             dir_path = temp_dir
+
+    if dir_path is None:
+        raise ValueError(errmsg("error: json file not found"))
+
     print(warning("Found {} json files in {}".format(len(args), dir_path)))
 
     return [serializeDocumentsFrom(dir_path, f_name) for f_name in args]
@@ -64,6 +71,30 @@ def jsonFilesExistIn(dir_path, filenames) -> bool:
     Returns True if all the files in filenames exist in the dir_path.
     '''
     return all((os.path.isfile(os.path.join(dir_path, f_name)) for f_name in filenames))
+
+
+def serializeDocumentsFrom(dir_path, f_name):
+    '''
+    Loads and serializes a json file.
+    Returns the data in a list.
+    '''
+    collName = f_name[:-5].lower()
+    print("Loading {}...".format(f_name))
+    with open(os.path.join(dir_path, f_name), 'r') as f:
+        docs = json.load(f)[collName]['row']
+
+    return docs
+
+
+def warning(s):
+    return WARNING + s + ENDC
+
+def green(s):
+    return OKGREEN + s + ENDC
+
+def errmsg(s):
+    return FAIL + s + ENDC
+
 
 
 if __name__ == '__main__':

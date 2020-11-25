@@ -10,7 +10,7 @@ from pymongo.collation import Collation
 
 from phase1.extractTermsFrom import extractTermsFrom
 from phase1.serializeDocumentsFrom import serializeDocumentsFrom
-from bcolor.bcolor import green, warning
+from bcolor.bcolor import green, warning, errmsg
 
 
 async def main() -> int:
@@ -32,9 +32,6 @@ async def main() -> int:
 
         # collections
         posts = db['posts']
-        # votes = db['votes']
-        # tags = db['tags']
-
 
         st = time.time()
         postDocs = loadAllDocumentsFrom('Posts.json')
@@ -42,17 +39,9 @@ async def main() -> int:
         print("Loading and extracting took {:.5f} seconds.\n".format(time.time() - st))
 
         st = time.time()
-        # insert at the same time
-        # await asyncio.gather(
-        #         insert_many_task(posts, postDocs),
-        #         insert_many_task(votes, voteDocs),
-        #         insert_many_task(tags, tagDocs),
-        #     )
         sub_insert_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'sub_insert.py')
         subprocess.Popen(['python3', sub_insert_path, str(port)])
         await insert_many_task(posts, postDocs)
-        # await insert_many_task(votes, voteDocs),
-        # await insert_many_task(tags, tagDocs),
         print("Insertions took {:.5f} seconds.\n".format(time.time() - st))
 
         print("Phase 1 complete!")
@@ -102,10 +91,10 @@ def getPort() -> int:
 
     return int(port)
 
-# TODO only the post.json will use this function
-def loadAllDocumentsFrom(*args) -> list:
+
+def loadAllDocumentsFrom(f_name) -> list:
     '''
-    Reads and serializes json files and returns the list of MongoDB documents corresponding to each file.
+    Reads and serializes a json file and returns the list of MongoDB documents corresponding to each file.
     '''
     print("\nSearching and loading a json file...")
     desired_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data')
@@ -117,18 +106,17 @@ def loadAllDocumentsFrom(*args) -> list:
 
     dir_path = None
     for temp_dir in dirs_to_test:
-        if jsonFilesExistIn(temp_dir, args):
+        if os.path.isfile(os.path.join(temp_dir, f_name)):
             dir_path = temp_dir
-    print(warning("Found {} json files in {}".format(len(args), dir_path)))
 
-    return [serializeDocumentsFrom(dir_path, f_name) for f_name in args][0]
+    if dir_path is None:
+        raise ValueError(errmsg("error: json file not found"))
+
+    print(warning("Found a json file in {}".format(dir_path)))
+
+    return serializeDocumentsFrom(dir_path, f_name)
 
 	
-def jsonFilesExistIn(dir_path, filenames) -> bool:
-    '''
-    Returns True if all the files in filenames exist in the dir_path.
-    '''
-    return all((os.path.isfile(os.path.join(dir_path, f_name)) for f_name in filenames))
 
 
 
