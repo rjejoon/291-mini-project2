@@ -11,6 +11,7 @@ from phase2.searchQ import searchQ
 from phase2.listAnswers import listAnswers
 from phase2.votePost import votePost
 from phase2.getValidInput import getValidInput 
+from phase2.clear import clear
 
 from bcolor.bcolor import errmsg, pink, underline, bold
 
@@ -36,8 +37,12 @@ def main() -> int:
                 targetQ, action = searchQ(db)
                 if action == 'pa':
                     postAns(db['posts'], uid, targetQ['Id'])
-                elif action == 'vp' or (action == 'la' and listAnswers(db['posts'], targetQ)):
-                    votePost(db['votes'], uid, targetQ['Id'])
+                elif action == 'vp':
+                    votePost(db, uid, targetQ['Id'])
+                elif action == 'la':
+                    targetAid = listAnswers(db['posts'], targetQ)
+                    if targetAid != '':
+                        votePost(db, uid, targetAid)
                 elif action == 'bm':
                     clear()
             elif command == 'pq':
@@ -89,13 +94,3 @@ def getUid() -> str:
         if uid.isdigit():
             return uid
         print(errmsg("error: uid must be a number"))
-
-
-def clear():
-    '''
-    Clears the shell.
-    '''
-    if os.name == 'nt':
-        os.system('cls')
-    elif os.name == 'posix':
-        os.system('clear')

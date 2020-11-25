@@ -3,7 +3,7 @@ from collections import OrderedDict
 
 from pymongo import MongoClient
 
-from phase2 import phase2
+from phase2.clear import clear
 from phase2.getValidInput import getValidInput
 from bcolor.bcolor import pink, errmsg, cyan, bold, warning
 
@@ -19,7 +19,7 @@ def searchQ(db):
         targetPost -- list
         action -- str
     '''
-    phase2.clear()
+    clear()
     print(pink('< Search for Questions >'))
 
     posts = db["posts"]
@@ -223,7 +223,7 @@ def displaySelectedPost(resultList, posts, no):
         if f not in fieldNames:
             fieldNames.append(f)
 
-    phase2.clear()
+    clear()
     print(cyan('Selected Post Information:\n'))
     for f in fieldNames:
         if f in targetDoc:

@@ -4,21 +4,21 @@ from pymongo import MongoClient
 
 from bcolor.bcolor import bold, cyan, warning, errmsg
 from phase2.getValidInput import getValidInput
+from phase2.clear import clear
 
-from phase2 import phase2
 
-
-def listAnswers(posts, targetQ: dict) -> bool:
+def listAnswers(posts, targetQ: dict) -> str:
     '''
     Displays all the answers that correspond to the target question post.
-    An accepted answer is marked with a star.
-    By selecting an answer post, the user can see all its fields.
+    An accepted answer is displayed first and marked with a star.
+    By selecting an answer post, the user can see all its field, and it returns
+    its post id.
 
     Inputs:
         posts -- Collection
         targetQ -- dict
     Return:
-        bool
+        str
     '''
     # "aa": accepted answer
     aaDoc = None
@@ -31,7 +31,7 @@ def listAnswers(posts, targetQ: dict) -> bool:
                                  { "Id": { "$ne": aaId } },
                                  { "ParentId": targetQ["Id"] }]})
 
-    phase2.clear()
+    clear()
     ansDocs = []
 
     i = 0
@@ -48,7 +48,7 @@ def listAnswers(posts, targetQ: dict) -> bool:
     # no answer for the selected question
     if i == 0:
         print(errmsg("There is no answer post to this question."))
-        return False
+        return ''
 
     interval = "[1]" if i == 1 else "[1-{}]".format(i) 
     prompt = "Select an answer {} ".format(interval)
@@ -59,7 +59,7 @@ def listAnswers(posts, targetQ: dict) -> bool:
 
     printAnswerDocumentFull(selectedAnsDoc)
 
-    return True 
+    return selectedAnsDoc['Id']
 
 
 def printAnswerDocumentFull(doc):
@@ -71,7 +71,7 @@ def printAnswerDocumentFull(doc):
         i -- int
         isAA -- bool
     '''
-    phase2.clear()
+    clear()
     fieldNames = [
                     '_id',
                     'Id',
