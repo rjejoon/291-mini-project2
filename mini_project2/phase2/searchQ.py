@@ -1,8 +1,6 @@
 import time
-import re
 from collections import OrderedDict
 
-from pymongo import MongoClient
 
 from phase2.clear import clear
 from phase2.getValidInput import getValidInput
