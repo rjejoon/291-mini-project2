@@ -3,6 +3,7 @@ import time
 import os
 import traceback
 import asyncio
+import subprocess, multiprocessing
 
 import motor.motor_asyncio
 from pymongo.collation import Collation
@@ -31,21 +32,26 @@ async def main() -> int:
 
         # collections
         posts = db['posts']
-        tags = db['tags']
-        votes = db['votes']
+        # votes = db['votes']
+        # tags = db['tags']
+
 
         st = time.time()
-        postDocs, voteDocs, tagDocs = loadAllDocumentsFrom('Posts.json', 'Votes.json', 'Tags.json')
+        postDocs = loadAllDocumentsFrom('Posts.json')
         print(green("Done!"))
         print("Loading and extracting took {:.5f} seconds.\n".format(time.time() - st))
 
         st = time.time()
         # insert at the same time
-        await asyncio.gather(
-                insert_many_task(posts, postDocs),
-                insert_many_task(votes, voteDocs), 
-                insert_many_task(tags, tagDocs),
-            )
+        # await asyncio.gather(
+        #         insert_many_task(posts, postDocs),
+        #         insert_many_task(votes, voteDocs),
+        #         insert_many_task(tags, tagDocs),
+        #     )
+        subprocess.Popen(['python', 'test.py', str(port)])
+        await insert_many_task(posts, postDocs)
+        # await insert_many_task(votes, voteDocs),
+        # await insert_many_task(tags, tagDocs),
         print("Insertions took {:.5f} seconds.\n".format(time.time() - st))
 
         print("Phase 1 complete!")
@@ -111,10 +117,10 @@ def loadAllDocumentsFrom(*args) -> list:
     dir_path = None
     for temp_dir in dirs_to_test:
         if jsonFilesExistIn(temp_dir, args):
-            dir_path = temp_dir	
+            dir_path = temp_dir
     print(warning("Found {} json files in {}".format(len(args), dir_path)))
-            
-    return [serializeDocumentsFrom(dir_path, f_name) for f_name in args]
+
+    return [serializeDocumentsFrom(dir_path, f_name) for f_name in args][0]
 
 	
 def jsonFilesExistIn(dir_path, filenames) -> bool:
