@@ -31,7 +31,7 @@ async def insert_many_task(coll, documents):
     print("Inserting documents to {}...".format(coll.name))
     await coll.insert_many(documents, ordered=False)
     documents.clear()
-    print(green("Finished inserting {}!".format(coll.name)))
+    print("Finished inserting {}!".format(coll.name))
 
 
 if __name__ == '__main__':
