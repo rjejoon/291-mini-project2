@@ -66,7 +66,8 @@ def findMatch(posts, kwList) -> list:
         resultList -- list
     '''
     st = time.time()
-    kwList1 = kwList2 = []
+    kwList1 = []
+    kwList2 = []
     for kw in kwList:
         if len(kw) >= 3:
             kwList1.append(kw)
@@ -85,40 +86,39 @@ def findMatch(posts, kwList) -> list:
         cursor2 = posts.aggregate([
             {"$match":
                 {
-                    {
-                        "$expr":
-                        {
-                            {
-                                "$function":
+                    "$expr":
+
+                        {"$gt":
+                            [
+                                {"$function":
                                     {
                                         "body": ''' 
                                                 function(title, body, tags, kwList) {
 
-                                                    const match = kwList.reduce((accum, kw)) => {
+                                                    const match = kwList.reduce((accum, kw) => {
                                                         accum + (title.length - title.replace(kw, '').length) / kw.length + 
                                                         (body.length - body.replace(kw, '').length) / kw.length + 
                                                         (tags.length - tags.replace(kw, '').length) / kw.length;
-                                                    };
+                                                    });
                                                     return (match > 0 ? true : false );
                                                 }
                                                 ''',
-                                        "args": ( "$Title", "$Body", "$Tags", kwList2 ),
+                                        "args": [ "$Title", "$Body", "$Tags", kwList2 ],
                                         "lang": 'js'
                                     }
-                            }
+                                },0
+                            ]
 
                         }
-                    }
-
                 }
             }
-        
         ])
-
+    
+    
     resultList = list(cursor1)
     if cursor2 is not None:
         resultList.extend(list(cursor2))
-
+    
     print("Searching took {:5} seconds.".format(time.time() - st))
 
     return resultList
