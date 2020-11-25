@@ -54,7 +54,7 @@ async def main() -> int:
         return 0
 
     except TypeError as e:
-        print(traceback.print_exc())
+        print(e)
         return 1
 
     except:

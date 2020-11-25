@@ -2,19 +2,21 @@ from datetime import datetime
 
 from bcolor.bcolor import green, warning, pink, errmsg
 from phase2.getValidInput import getValidInput
-from phase2.postQA import genID
 
 
-def votePost(db, uid, targetPid) -> bool:
+def votePost(db, maxIdDict, uid, targetPid) -> bool:
     '''
     Prompts the user to vote on the selected post
     The user is allowed to vote on the same post only once
     Inserts the vote info into votes collection with a unique vid
 
     Inputs:
-            db -- pymongo.database.Database
-            uid -- str
-            targetPid 
+        db -- pymongo.database.Database
+        maxIdDict -- dict
+        uid -- str
+        targetPid 
+    Return:
+        bool
     '''
     posts = db['posts']
     votes = db['votes']
@@ -36,7 +38,9 @@ def votePost(db, uid, targetPid) -> bool:
         print(errmsg("error: you've already voted on this post."))
         return False
         
-    vid = genID(votes)
+    vid = str(maxIdDict['votes'] + 1)
+    maxIdDict['votes'] += 1
+
     crdate = str(datetime.now()).replace(' ', 'T')[:-3]
     vote = {
             "Id"          : vid,

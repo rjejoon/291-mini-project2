@@ -24,6 +24,7 @@ def main() -> int:
         port = getPort()
         client = MongoClient(port=port)
         db = client['291db']
+        maxIdDict = getMaxIds(db)
         clear()
         uid = getUid()
         displayReport(db, uid)
@@ -36,25 +37,29 @@ def main() -> int:
             if command == 'sq':
                 targetQ, action = searchQ(db)
                 if action == 'pa':
-                    postAns(db['posts'], uid, targetQ['Id'])
+                    postAns(db['posts'], maxIdDict, uid, targetQ['Id'])
                 elif action == 'vp':
-                    votePost(db, uid, targetQ['Id'])
+                    votePost(db, maxIdDict, uid, targetQ['Id'])
                 elif action == 'la':
                     targetAid = listAnswers(db['posts'], targetQ)
                     if targetAid != '':
-                        votePost(db, uid, targetAid)
+                        votePost(db, maxIdDict, uid, targetAid)
                 elif action == 'bm':
                     clear()
             elif command == 'pq':
-                postQ(db, uid)
+                postQ(db, maxIdDict, uid)
             else:
                 pressedExit = True
 
         return 0
 
+    except TypeError as e:
+        print(e)
+        return 1
+
     except:
         print(traceback.print_exc())
-        return 1
+        return 2
 
     finally:
         print("Disconnecting from MongoDB...")
@@ -80,6 +85,32 @@ def printInterface(uid):
     print("  {}: {}".format(bold('q'), q))
     print()
 
+
+def getMaxIds(db) -> dict:
+    '''
+    Gets current maximum Ids from posts, votes, tags collections.
+    '''
+    return { col: int(genID(db[col])) for col in ['posts', 'votes', 'tags'] }
+
+
+def genID(collName) -> str:
+    '''
+    Finds the larget id in the given collection and generates a unique id
+
+    Input: 
+        collName -- pymongo.collection.Collection
+    Return: 
+        str
+    '''
+    cursor = collName.aggregate([
+        {"$group": {"_id": None, "maxId": {"$max": {"$toInt": "$Id"}}}}
+    ])
+    maxId = 1
+    for doc in cursor:
+        maxId = doc['maxId']
+    
+    return str(int(maxId)+1)
+    
 
 def getUid() -> str:
     '''
