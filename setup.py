@@ -27,11 +27,11 @@ setup(
     long_description_content_type='text/markdown',
     license="MIT License",
     packages=find_packages(),
-    # install_requires=[
-        # "cython",
-        # "pymongo",
-        # "motor"
-    # ],
+    install_requires=[
+        "cython",
+        "pymongo",
+        "motor"
+    ],
     ext_modules = cythonize(extensions),
     url='https://github.com/rjejoon/291_mini_project2',
     classifiers=[
