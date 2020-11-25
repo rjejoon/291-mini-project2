@@ -1,4 +1,5 @@
 import time
+import re
 from collections import OrderedDict
 
 from pymongo import MongoClient
@@ -68,56 +69,66 @@ def findMatch(posts, kwList) -> list:
     st = time.time()
     kwList1 = []
     kwList2 = []
+    resultList = []
     for kw in kwList:
         if len(kw) >= 3:
             kwList1.append(kw)
         else:
             kwList2.append(kw)
 
-    cursor1 = posts.find(
+    cursor1 = list(posts.find(
              {"$and": [{"terms": {"$in": kwList1}},
                                 {"PostTypeId":"1"}]}
-             ).collation({"locale": "en", "strength":2})    # collation strength :2 --> case-insensitive
+             ).collation({"locale": "en", "strength": 2}))   # collation strength :2 --> case-insensitive
 
-    cursor2 = None
+    [resultList.append(each) for each in cursor1]
+
     if len(kwList2) > 0:
         # TODO partial search if we have time 
-        # cursor2 = posts.find({ "terms": { "$regex": "/{}/i".format(kw) } })
-        cursor2 = posts.aggregate([
-            {"$match":
-                {
-                    "$expr":
+        # cursor2 = posts.find({ "terms": { "$regex": /789$/ } })
+        # cursor2 = posts.aggregate([
+        #     {"$match":
+        #         {
+        #             "$expr":
+        #
+        #                 {"$gt":
+        #                     [
+        #                         {"$function":
+        #                             {
+        #                                 "body": '''
+        #                                         function(title, body, tags, kwList) {
+        #
+        #                                             const match = kwList.reduce((accum, kw) => {
+        #                                                 accum + (title.length - title.replace(kw, '').length) / kw.length +
+        #                                                 (body.length - body.replace(kw, '').length) / kw.length +
+        #                                                 (tags.length - tags.replace(kw, '').length) / kw.length;
+        #                                             });
+        #                                             return (match > 0 ? true : false );
+        #                                         }
+        #                                         ''',
+        #                                 "args": [ "$Title", "$Body", "$Tags", kwList2 ],
+        #                                 "lang": 'js'
+        #                             }
+        #                         },0
+        #                     ]
+        #
+        #                 }
+        #         }
+        #     }
+        # ])
 
-                        {"$gt":
-                            [
-                                {"$function":
-                                    {
-                                        "body": ''' 
-                                                function(title, body, tags, kwList) {
-
-                                                    const match = kwList.reduce((accum, kw) => {
-                                                        accum + (title.length - title.replace(kw, '').length) / kw.length + 
-                                                        (body.length - body.replace(kw, '').length) / kw.length + 
-                                                        (tags.length - tags.replace(kw, '').length) / kw.length;
-                                                    });
-                                                    return (match > 0 ? true : false );
-                                                }
-                                                ''',
-                                        "args": [ "$Title", "$Body", "$Tags", kwList2 ],
-                                        "lang": 'js'
-                                    }
-                                },0
-                            ]
-
-                        }
-                }
-            }
-        ])
-    
-    
-    resultList = list(cursor1)
-    if cursor2 is not None:
-        resultList.extend(list(cursor2))
+        for kw in kwList2:
+            cursor2 = list(posts.find(
+                {"$and": [
+                    {"$or": [
+                        {"Title": {"$regex": '.*{}.*'.format(kw), '$options': 'i'}},
+                        {"Body": {"$regex": '.*{}.*'.format(kw), '$options': 'i'}},
+                        {"Tags": {"$regex": kw, '$options': 'i'}}
+                    ]},
+                    {'PostTypeId': '1'}
+                ]}
+            ).collation({"locale": "en", "strength": 2}))
+            [resultList.append(each) for each in cursor2]
     
     print("Searching took {:5} seconds.".format(time.time() - st))
 
