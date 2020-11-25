@@ -5,6 +5,7 @@ import asyncio
 import traceback
 
 import motor.motor_asyncio
+from pymongo.collation import Collation
 
 OKGREEN = '\033[92m'
 WARNING = '\033[93m'
@@ -18,6 +19,11 @@ async def main():
         client = motor.motor_asyncio.AsyncIOMotorClient(port=port)
         db = client['291db']
         voteDocs, tagDocs = loadAllDocumentsFrom('Votes.json', 'Tags.json')
+
+        votes = db['votes']
+        tags = await db.create_collection('tags', 
+                                          collation=Collation(locale='en', strength=2))
+                                            
 
         await asyncio.gather(
                 insert_many_task(db['votes'], voteDocs),

@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from pymongo import MongoClient
+from pymongo.collation import Collation
 
 from phase1.extractTermsFrom import extractTermsFrom
 from phase2.getValidInput import getValidInput
@@ -131,7 +132,7 @@ def getTags() -> set:
     tags = input("Enter zero or more tags, each separated by a comma: ")
 
     tagSet = {
-                tag.strip()
+                tag.strip().lower()
                 for tag in tags.split(',')
                 if tag != ''
              }
@@ -184,8 +185,9 @@ def insertTags(tagsColl, tags, maxIdDict):
     Increments its count by one if exists; otherwise inserts a new doc with the tagName provided in the collection
     '''
     for tagName in tags:
-        cursor = tagsColl.find_one({"TagName": tagName})
-        if cursor:
+        cursor = tagsColl.find({"TagName": tagName}).collation(Collation(locale='en', strength=2))
+
+        if len(list(cursor)) > 0:
             tagsColl.update({"TagName": tagName},{"$inc": {"Count": 1}})
         else:
             tagId = str(maxIdDict['tags'] + 1)
