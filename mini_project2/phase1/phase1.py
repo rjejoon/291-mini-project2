@@ -3,6 +3,7 @@ import time
 import os
 import traceback
 import asyncio
+import subprocess, multiprocessing
 
 import motor.motor_asyncio
 from pymongo.collation import Collation
@@ -41,11 +42,15 @@ async def main() -> int:
 
         st = time.time()
         # insert at the same time
-        await asyncio.gather(
-                insert_many_task(posts, postDocs),
-                insert_many_task(votes, voteDocs), 
-                insert_many_task(tags, tagDocs),
-            )
+        # await asyncio.gather(
+        #         insert_many_task(posts, postDocs),
+        #         insert_many_task(votes, voteDocs),
+        #         insert_many_task(tags, tagDocs),
+        #     )
+
+        # subprocess.Popen(['ls', '-l'])
+        subprocess.Popen(['python', 'test.py', str(port)])
+        await insert_many_task(posts, postDocs)
         print("Insertions took {:.5f} seconds.\n".format(time.time() - st))
 
         print("Phase 1 complete!")
