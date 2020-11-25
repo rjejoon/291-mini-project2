@@ -48,7 +48,7 @@ async def main() -> int:
         #         insert_many_task(votes, voteDocs),
         #         insert_many_task(tags, tagDocs),
         #     )
-        subprocess.Popen(['python', 'test.py', str(port)])
+        subprocess.Popen(['python3', 'test.py', str(port)])
         await insert_many_task(posts, postDocs)
         # await insert_many_task(votes, voteDocs),
         # await insert_many_task(tags, tagDocs),

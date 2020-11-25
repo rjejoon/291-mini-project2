@@ -50,7 +50,7 @@ def postQ(db, maxIdDict, uid) -> bool:
             # add Tags if the user enters at least one tag
             if tagSet:
                 post['Tags'] = '<' + '><'.join(tagSet) + '>'
-                insertTags(tagsColl, tagSet)
+                insertTags(tagsColl, tagSet, maxIdDict)
                 
             postsColl.insert_one(post)
 
